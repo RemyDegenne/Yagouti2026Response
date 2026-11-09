@@ -307,7 +307,7 @@ lemma smul_measure_sup_le_integral_zero [IsFiniteMeasure μ] {Z : ℕ → Ω →
     rw [hs_def, Set.mem_ofPred_eq, le_sup'_iff] at hω
     obtain ⟨j, hj, hj₂⟩ := hω
     rw [mem_range, Nat.lt_succ_iff] at hj
-    exact stoppedValue_hittingBtwn_mem ⟨j, ⟨Nat.zero_le _, hj⟩, hj₂⟩
+    exact stoppedValue_hittingBtwn_mem (s := {y : ℝ | (ε : ℝ) ≤ y}) ⟨j, ⟨Nat.zero_le _, hj⟩, hj₂⟩
   have hs_meas : MeasurableSet s :=
     measurableSet_le measurable_const
       (measurable_range_sup'' fun k _ ↦ ((hZ.stronglyAdapted k).mono (ℱ.le k)).measurable)

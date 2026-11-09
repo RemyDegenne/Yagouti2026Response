@@ -372,10 +372,7 @@ lemma isLittleOpOne_zero : IsLittleOpOne μ (fun _ _ ↦ (0 : ℝ)) := by
   intro ε hε
   have hz : (fun n : ℕ ↦ μ {ω : Ω | ε ≤ |(fun _ _ ↦ (0 : ℝ)) n ω|}) = fun _ ↦ 0 := by
     funext n
-    convert measure_empty (μ := μ)
-    ext ω
-    simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false, not_le, abs_zero]
-    exact hε
+    simp [not_le.mpr hε]
   rw [hz]
   exact tendsto_const_nhds
 

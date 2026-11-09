@@ -38,7 +38,7 @@ variable {Ω 𝓐 : Type*} {mΩ : MeasurableSpace Ω} {m𝓐 : MeasurableSpace �
 /-- **The response-martingale increment maxima are `o_p(1)` and `o_p(√n)`**, the probabilistic core
 of the increment control for `Q` used in Appendix A of the paper. For each window the deterministic
 increment control is `AlphaRAR.norm_increment_le_vmaxSeq_wmaxSeq`. -/
-lemma qm_increments_resp (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma qm_increments_resp (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) :
     IsLittleOpOne P (vmaxSeq (fun k ↦ respMart ν A Y k)) ∧
       IsLittleOpOne P

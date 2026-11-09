@@ -29,10 +29,10 @@ per-arm reward kernel `ν : Kernel 𝓐 ℝ`, the response of a patient assigned
 The mean of arm `a` is `ν.means a = ∫ x, x ∂(ν a)`. The centered response martingale
 of arm `k` is `Q k n = ∑_{m < n} 𝟙{A m = k} (Y m - ν.means k)`: it is `LeanMachineLearning`'s
 `noiseSum` — the martingale part of the summed rewards of an action, for an arbitrary environment —
-instantiated at the stationary environment `stationaryEnv ν`, whose step means are the arm means
-(`respMart_apply`). Its martingale property, adaptedness, integrability and `L²` membership are the
-upstream `IsAlgEnvSeq.martingale_noiseSum` and friends; what is specific to the stationary model is
-the quadratic variation `⟨Q k⟩ = V_k N_k`.
+instantiated at the stationary environment `Environment.bandit ν`, whose step means are the arm
+means (`respMart_apply`). Its martingale property, adaptedness, integrability and `L²` membership
+are the upstream `IsAlgEnvSeq.martingale_noiseSum` and friends; what is specific to the stationary
+model is the quadratic variation `⟨Q k⟩ = V_k N_k`.
 
 The two martingales of the model rest on different filtration conventions:
 `M` (the assignment martingale) is a martingale because the *assignment* `A (n+1)`
@@ -73,17 +73,17 @@ increments are the mean-centered responses of the patients assigned to arm `k`.
 
 It is the upstream `Learning.noiseSum` — the martingale part of `sumRewards A Y k` for the
 action-augmented filtration, in an arbitrary environment — at the stationary environment
-`stationaryEnv ν`, whose mean at every step is the arm mean `ν.means (A m)`; on `{A m = k}` that is
-`ν.means k`, which gives the displayed formula (`respMart_apply`). -/
+`Environment.bandit ν`, whose mean at every step is the arm mean `ν.means (A m)`; on `{A m = k}`
+that is `ν.means k`, which gives the displayed formula (`respMart_apply`). -/
 noncomputable def respMart (ν : Kernel 𝓐 ℝ) [IsMarkovKernel ν] (A : ℕ → Ω → 𝓐) (Y : ℕ → Ω → ℝ)
     (k : 𝓐) : ℕ → Ω → ℝ :=
-  noiseSum (stationaryEnv ν) (noObs Ω) A Y k
+  noiseSum (Environment.bandit ν) (noObs Ω) A Y k
 
 omit [MeasurableSingletonClass 𝓐] in
 /-- In the stationary environment the `noiseSum` increment of arm `k` is the indicator of
 `{A m = k}` times the response centered at the arm mean `ν.means k`. -/
 lemma respMart_increment_eq (O : ℕ → Ω → Unit) (k : 𝓐) (m : ℕ) (ω : Ω) :
-    {ω | A m ω = k}.indicator (fun ω ↦ Y m ω - (stationaryEnv ν).means O A Y (A m ω) m ω) ω
+    {ω | A m ω = k}.indicator (fun ω ↦ Y m ω - (Environment.bandit ν).means O A Y (A m ω) m ω) ω
       = actionIndicator A k m ω * (Y m ω - ν.means k) := by
   by_cases hω : A m ω = k
   · simp [hω, actionIndicator, Kernel.means_apply]
@@ -92,7 +92,7 @@ lemma respMart_increment_eq (O : ℕ → Ω → Unit) (k : 𝓐) (m : ℕ) (ω :
 omit [MeasurableSingletonClass 𝓐] in
 /-- Function form of `respMart_increment_eq`. -/
 lemma respMart_increment_eq' (O : ℕ → Ω → Unit) (k : 𝓐) (m : ℕ) :
-    {ω | A m ω = k}.indicator (fun ω ↦ Y m ω - (stationaryEnv ν).means O A Y (A m ω) m ω)
+    {ω | A m ω = k}.indicator (fun ω ↦ Y m ω - (Environment.bandit ν).means O A Y (A m ω) m ω)
       = fun ω ↦ actionIndicator A k m ω * (Y m ω - ν.means k) :=
   funext (respMart_increment_eq O k m)
 
@@ -129,7 +129,8 @@ in conditional mean: the indicator is `𝒢 i`-measurable and pulls out, and the
 conditional mean is the arm mean `ν.means (A i)`, which cancels `ν.means k` on `{A i = k}`. This is
 the fact that makes `Q` a martingale for `filtrationAction` (upstream
 `IsAlgEnvSeq.condExp_noiseSum_increment`, in the stationary environment). -/
-lemma condExp_respMart_increment (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐) (i : ℕ)
+lemma condExp_respMart_increment (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐)
+    (i : ℕ)
     (hint : Integrable (Y i) P) :
     P[fun ω ↦ actionIndicator A k i ω * (Y i ω - ν.means k) | h.filtrationAction i] =ᵐ[P] 0 := by
   have h' := h.condExp_noiseSum_increment k i hint
@@ -142,7 +143,7 @@ expectation `𝟙{A i = k} · V_k`, where `V_k = Var[id; ν k]` is the variance 
 indicator squares to itself, and on the event `{A i = k}` the response's conditional second
 central moment is exactly the arm variance. Retaining the (`𝒢`-measurable) indicator is what
 turns the summed second moments into `V_k N_{n,k}`. -/
-lemma condExp_respMart_increment_sq [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma condExp_respMart_increment_sq [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (k : 𝓐) (i : ℕ) (hνk : ∀ a, MemLp id 2 (ν a)) :
     P[fun ω ↦ (actionIndicator A k i ω * (Y i ω - ν.means k)) ^ 2
         | h.filtrationAction i]
@@ -189,12 +190,12 @@ lemma condExp_respMart_increment_sq [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (st
     rw [hc0, zero_mul, zero_mul]
 
 omit [MeasurableSingletonClass 𝓐] in
-/-- Successor form: `Q k (n+1) = Q k n + 𝟙{A n = k}(Y n - ν.means k)` (`noiseSum_succ`). -/
+/-- Successor form: `Q k (n+1) = Q k n + 𝟙{A n = k}(Y n - ν.means k)` (`noiseSum_add_one`). -/
 lemma respMart_succ (k : 𝓐) (n : ℕ) :
     respMart ν A Y k (n + 1) = respMart ν A Y k n +
       fun ω ↦ actionIndicator A k n ω * (Y n ω - ν.means k) := by
   unfold respMart
-  rw [noiseSum_succ, respMart_increment_eq' (noObs Ω)]
+  rw [noiseSum_add_one, respMart_increment_eq' (noObs Ω)]
 
 omit [MeasurableSingletonClass 𝓐] in
 /-- The response-martingale increment: `Q k (n+1) - Q k n = 𝟙{A n=k}(Y n - ν.means k)`. -/
@@ -223,15 +224,16 @@ lemma respMart_increment_mul_eq_zero {k j : 𝓐} (hkj : k ≠ j) (n : ℕ) :
 
 /-- Each `Q k n` is integrable (`IsAlgEnvSeq.integrable_noiseSum`). -/
 @[fun_prop]
-lemma integrable_respMart (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma integrable_respMart (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hint : ∀ n, Integrable (Y n) P) (k : 𝓐) (n : ℕ) :
     Integrable (respMart ν A Y k n) P :=
   h.integrable_noiseSum hint k n
 
+omit [IsProbabilityMeasure P] in
 /-- The response martingale `Q k` is adapted to the action-augmented filtration
 `𝒢 = filtrationAction`: `Q k n` depends only on the assignments and responses of patients
 `0, …, n-1`, all of which are `𝒢 n`-measurable (`IsAlgEnvSeq.stronglyAdapted_noiseSum`). -/
-lemma stronglyAdapted_respMart (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐) :
+lemma stronglyAdapted_respMart (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐) :
     StronglyAdapted h.filtrationAction (respMart ν A Y k) :=
   h.stronglyAdapted_noiseSum k
 
@@ -246,7 +248,7 @@ upstream `IsAlgEnvSeq.martingale_noiseSum` in the stationary environment. -/
 @[specifies respMart "names the filtration that makes `Q` a martingale: the *action-augmented* \
 `filtrationAction n = ℱ_{n-1} ⊔ σ(A n)`, where the assignment is already known and only the \
 response is fresh. Centring at the arm mean `ν.means k` is exactly what this filtration requires"]
-lemma martingale_respMart (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma martingale_respMart (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hint : ∀ n, Integrable (Y n) P) (k : 𝓐) :
     Martingale (respMart ν A Y k) h.filtrationAction P :=
   h.martingale_noiseSum hint k
@@ -273,10 +275,11 @@ lemma memLp_respMart_increment {m : ℕ} (k : 𝓐) (hAmeas : Measurable (A m))
     · simp [actionIndicator, Set.indicator_of_mem hω]
     · simp [actionIndicator, Set.indicator_of_notMem hω]
   rw [heq]
-  exact (hY2.sub (memLp_const _)).indicator (hAmeas (measurableSet_singleton k))
+  exact (hY2.sub (memLp_const _)).indicator (hAmeas (measurableSet_singleton k)).nullMeasurableSet
 
 /-- `Q k n` is in `L²` when the responses are (Condition **A**): `IsAlgEnvSeq.memLp_noiseSum`. -/
-lemma memLp_respMart (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (hY2 : ∀ n, MemLp (Y n) 2 P)
+lemma memLp_respMart (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
+    (hY2 : ∀ n, MemLp (Y n) 2 P)
     (k : 𝓐) (n : ℕ) :
     MemLp (respMart ν A Y k n) 2 P :=
   h.memLp_noiseSum one_le_two ENNReal.ofNat_ne_top hY2 k n
@@ -294,7 +297,7 @@ derived from it. -/
 `V_k` per *pull of arm `k`*, so `⟨Q k⟩_n = V_k N_{n,k}` exactly — not `V_k n`. This is what \
 makes the clock of `Q k` the arm's own count and drives every rate downstream"]
 lemma predQuadVar_respMart_eq [DecidableEq 𝓐] [Finite 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (k : 𝓐) (hνk : ∀ a, MemLp id 2 (ν a)) (n : ℕ) :
     predQuadVar (respMart ν A Y k)
         h.filtrationAction P n
@@ -355,7 +358,7 @@ lemma predQuadVar_respMart_eq [DecidableEq 𝓐] [Finite 𝓐]
 (`⟨Q⟩ = V_k N`) this is the compensated response martingale. The only hypothesis is
 Condition **A** (`hνk`), from which the square-integrability of `Q` is derived. -/
 lemma martingale_sq_sub_predQuadVar_respMart [Finite 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (k : 𝓐) (hνk : ∀ a, MemLp id 2 (ν a)) :
     Martingale
       (fun n ↦ (fun ω ↦ respMart ν A Y k n ω ^ 2)
@@ -372,7 +375,7 @@ lemma martingale_sq_sub_predQuadVar_respMart [Finite 𝓐]
 `⟨Q_k⟩ = V_k N` (`predQuadVar_respMart_eq`): `𝔼[Q²] = 𝔼[⟨Q⟩] = V_k 𝔼[N]`. The only hypothesis is
 Condition **A**. -/
 lemma integral_respMart_sq_eq [DecidableEq 𝓐] [Finite 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (k : 𝓐) (hνk : ∀ a, MemLp id 2 (ν a)) (n : ℕ) :
     ∫ ω, respMart ν A Y k n ω ^ 2 ∂P = Var[id; ν k] * ∫ ω, (pullCount A k n ω : ℝ) ∂P := by
   have hY2 : ∀ n, MemLp (Y n) 2 P := fun n ↦ h.memLp_feedback hνk n
@@ -387,7 +390,7 @@ predictable compensator — the cross variation `⟨Q_k, Q_j⟩` — is `0`. The
 merely conditional: since each patient is assigned to exactly one arm, the increment indicators
 `𝟙{A = k}` and `𝟙{A = j}` are disjoint, so the product of increments `ΔQ_{·,k} · ΔQ_{·,j}` is
 *identically* `0`. -/
-lemma martingale_respMart_mul [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma martingale_respMart_mul [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) {k j : 𝓐} (hkj : k ≠ j) :
     Martingale (fun n ↦ respMart ν A Y k n * respMart ν A Y j n)
       h.filtrationAction
@@ -406,7 +409,7 @@ lemma martingale_respMart_mul [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationa
 probability of assigning arm `k`, which is `≤ 1`. This is the increment bound feeding
 `isBigOpOne_respMart_div_sqrt`. -/
 lemma integral_respMart_increment_sq_le [Finite 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐) (n : ℕ)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐) (n : ℕ)
     (hνk : ∀ a, MemLp id 2 (ν a)) :
     ∫ ω, (respMart ν A Y k (n + 1) ω - respMart ν A Y k n ω) ^ 2 ∂P ≤ Var[id; ν k] := by
   have hY2 : MemLp (Y n) 2 P := h.memLp_feedback hνk n
@@ -437,7 +440,7 @@ For each arm `k`, under Condition **A** (square-integrable arm rewards,
 variance: `∫ (ΔQ)² ≤ V_k`. Indeed the `𝒢`-conditional second moment is `𝟙{A n = k}·V_k`
 (`condExp_respMart_increment_sq`), so by the tower property `∫ (ΔQ)² = V_k · P{A n = k} ≤ V_k`.
 Then `isBigOpOne_martingale_div_sqrt` applies with `σ² = V_k`. -/
-lemma isBigOpOne_respMart_div_sqrt [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma isBigOpOne_respMart_div_sqrt [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (k : 𝓐) :
     IsBigOpOne P (fun n ω ↦ respMart ν A Y k n ω / √n) := by
   have hY2 : ∀ n, MemLp (Y n) 2 P := fun n ↦ h.memLp_feedback hνk n

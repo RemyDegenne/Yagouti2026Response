@@ -89,7 +89,7 @@ consistencies `θ̂ → θ` (`theta_consistent_of_hitting`), `N/n → v`
 `√n(N_n/n - ρ̂_n) →ₚ 0` is discharged from `prop_dev_of_hitting` (part (i) of the same
 theorem). -/
 lemma clt_joint_of_hitting [Fintype 𝓐] [DecidableEq 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (θ₀ : 𝓐 → ℝ) (T : (𝓐 → ℝ) → 𝓐 → ℝ)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     (α : ℝ) (hα : α ∈ Set.Icc (0 : ℝ) 1) (hα1 : α < 1)
@@ -183,7 +183,7 @@ The `aRTS` instantiation of `clt_joint_of_hitting` at the last under-sampling ti
 `o_p`-smallness is `aRTS_smallness_op`, both automatic because `N_ℓ - ℓ ρ̂_ℓ ≤ 0` at that time
 (`preliminary_small`). -/
 theorem aRTS_clt_joint [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (θ₀ : 𝓐 → ℝ) (T : (𝓐 → ℝ) → 𝓐 → ℝ)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     (α : ℝ) (hα : α ∈ Set.Icc (0 : ℝ) 1) (hα1 : α < 1) (hARTS : IsARTS alg θ₀ T α)

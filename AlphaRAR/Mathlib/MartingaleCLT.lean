@@ -830,7 +830,7 @@ noncomputable def trunc (A : MartDiffArray P) [IsFiniteMeasure P] (B : ℝ) : Ma
   memLp n i := MemLp.indicator
     (measurableSet_le
       ((A.stronglyMeasurable_partialVar_succ n i).measurable.mono ((A.𝓕 n).le i) le_rfl)
-      measurable_const) (A.memLp n i)
+      measurable_const).nullMeasurableSet (A.memLp n i)
   adapted n i := (A.adapted n i).indicator
     (measurableSet_le
       ((A.stronglyMeasurable_partialVar_succ n i).measurable.mono ((A.𝓕 n).mono i.le_succ) le_rfl)

@@ -55,8 +55,9 @@ lemma measurable_eval_of_le {H : Ω → ℕ → ℝ} (hH : ∀ m, Measurable (H 
   exact Finset.measurable_sum _ fun m _ ↦
     Measurable.ite (hg (measurableSet_singleton m)) (hH m) measurable_const
 
+omit [IsProbabilityMeasure P] in
 /-- Measurability of the plug-in-target coordinate `ω ↦ ρ̂_{n,k}(ω)`. -/
-lemma measurable_aRTSTarget_coord [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma measurable_aRTSTarget_coord [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (θ₀ : 𝓐 → ℝ) {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T) (n : ℕ) (k' : 𝓐) :
     Measurable (fun ω ↦ aRTSTarget A Y θ₀ T n ω k') := by
   cases nonempty_fintype 𝓐
@@ -74,18 +75,20 @@ lemma measurable_hitting {Q : Ω → ℕ → Prop} [∀ ω, DecidablePred (Q ω)
   intro m _
   exact hQmeas m
 
+omit [IsProbabilityMeasure P] in
 /-- The level sets of the aRTS under-sampling predicate are measurable. -/
 lemma measurableSet_aRTSUnder [Finite 𝓐] [DecidableEq 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (θ₀ : 𝓐 → ℝ) {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T) (k' : 𝓐) (m : ℕ) :
     MeasurableSet {ω | aRTSUnder A Y θ₀ T k' ω m} := by
   simp only [aRTSUnder, ← count_indicator_eq_pullCount]
   exact measurableSet_le (measurable_count_actionIndicator h k' m)
     ((measurable_aRTSTarget_coord h θ₀ hT m k').const_mul _)
 
+omit [IsProbabilityMeasure P] in
 /-- Measurability of the aRTS hitting time `ω ↦ ℓ_{n,k}(ω)`. -/
 lemma measurable_hitting_aRTSUnder [Finite 𝓐] [DecidableEq 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ) {T : (𝓐 → ℝ) → 𝓐 → ℝ}
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ) {T : (𝓐 → ℝ) → 𝓐 → ℝ}
     (hT : Continuous T) (k' : 𝓐) (n : ℕ) :
     Measurable (fun ω ↦ hitting (aRTSUnder A Y θ₀ T k' ω) n) :=
   measurable_hitting (measurableSet_aRTSUnder h θ₀ hT k') n
@@ -121,13 +124,14 @@ lemma measurable_hitting_cast {Q : Ω → ℕ → Prop} [∀ ω, DecidablePred (
   measurable_eval_of_le (H := fun _ m ↦ (m : ℝ)) (fun _ ↦ measurable_const)
     (measurable_hitting hQmeas n) (fun _ ↦ Nat.findGreatest_le n)
 
+omit [IsProbabilityMeasure P] in
 /-- **Measurability of the generic-condition gap at an abstract hitting time**:
 `ω ↦ N_{ℓ_n,k} - ℓ_n ρ̂_{ℓ_n,k}`, for a measurable-level-set predicate `Q`. This is the quantity
 every smallness condition bounds, so measurability is what turns an a.s. bound on it into the
 `o_p`-smallness `hsmall_op` asks for. -/
 lemma measurable_gap_hitting [Finite 𝓐] [DecidableEq 𝓐] {Q : Ω → ℕ → Prop}
     [∀ ω, DecidablePred (Q ω)]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ) {T : (𝓐 → ℝ) → 𝓐 → ℝ}
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ) {T : (𝓐 → ℝ) → 𝓐 → ℝ}
     (hT : Continuous T) (hQmeas : ∀ m, MeasurableSet {ω | Q ω m}) (k : 𝓐) (n : ℕ) :
     Measurable (fun ω ↦ (pullCount A k (hitting (Q ω) n) ω : ℝ)
       - (hitting (Q ω) n : ℝ) * aRTSTarget A Y θ₀ T (hitting (Q ω) n) ω k) := by
@@ -143,7 +147,7 @@ lemma measurable_gap_hitting [Finite 𝓐] [DecidableEq 𝓐] {Q : Ω → ℕ �
 `ell_rho_control`; the argument only uses `ℓ ≤ n` and the proportion consistency, so it is
 design-independent (the `aRTS`/`aRTSFE` hitting times just supply the measurable predicate `Q`).
 Stated in `count` form, which is how it is passed to `ell_rho_control`. -/
-lemma h_bigOp_of_hitting (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma h_bigOp_of_hitting (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     {Q : Ω → ℕ → Prop} [∀ ω, DecidablePred (Q ω)] (hQmeas : ∀ m, MeasurableSet {ω | Q ω m})
     (k'' : 𝓐) {v : ℝ} (hv : 0 < v)
     (hN : ∀ᵐ ω ∂P, Tendsto (fun m ↦ count (fun j ↦ actionIndicator A k'' j ω) m / (m : ℝ))
@@ -198,7 +202,7 @@ running-max `sup_{m≤n}|Q_m| = O_p(√n)` and `√n/(N_n+1) → 0`); then `O_p�
 uses only `ℓ ≤ n` and measurability of `Q`, so it is design-independent. Stated in `count` form,
 which is how it is passed to `ell_rho_control`. -/
 lemma g_littleOp_of_hitting [Finite 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (hνk : ∀ a, MemLp id 2 (ν a)) (θ₀ : 𝓐 → ℝ)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (hνk : ∀ a, MemLp id 2 (ν a)) (θ₀ : 𝓐 → ℝ)
     {Q : Ω → ℕ → Prop} [∀ ω, DecidablePred (Q ω)] (hQmeas : ∀ m, MeasurableSet {ω | Q ω m})
     (k'' : 𝓐) {v : ℝ} (hv : 0 < v)
     (hN : ∀ᵐ ω ∂P, Tendsto (fun m ↦ count (fun j ↦ actionIndicator A k'' j ω) m / (m : ℝ))
@@ -315,7 +319,7 @@ assignment-martingale `M`-increment, and the `ell_rho_control` `g`/`h`-coefficie
 discharged uniformly. The `aRTS`/`aRTSFE` designs then instantiate it with their respective
 predicates. -/
 lemma prop_dev_of_hitting [Fintype 𝓐] [DecidableEq 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
     (θ₀ : 𝓐 → ℝ) (T : (𝓐 → ℝ) → 𝓐 → ℝ)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     (α : ℝ) (hα : α ∈ Set.Icc (0 : ℝ) 1) (hα1 : α < 1)
@@ -698,7 +702,7 @@ and the non-sparsity `hTpos`. The smallness is automatic: at the last under-samp
 `N_ℓ - ℓ ρ̂_ℓ ≤ 0` (`preliminary_small`), so `(1 + N_ℓ - ℓ ρ̂_ℓ)^+/√n ≤ 1/√n = o_p(1)`. The a.s.
 `O(√(n log log n))` bounds are a separate statement. -/
 theorem aRTS_prop_dev [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
     (θ₀ : 𝓐 → ℝ) (T : (𝓐 → ℝ) → 𝓐 → ℝ)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     (α : ℝ) (hα : α ∈ Set.Icc (0 : ℝ) 1) (hα1 : α < 1) (hARTS : IsARTS alg θ₀ T α)

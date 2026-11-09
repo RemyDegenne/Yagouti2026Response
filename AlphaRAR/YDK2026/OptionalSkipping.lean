@@ -238,7 +238,7 @@ lemma measurableSet_filt_cleanBdd (hYlt : ∀ a b, a < b → Measurable[𝒢 b] 
     (hD : ∀ i, Measurable[𝒢 i] (D i)) (hE : MeasurableSet E) (i j : ℕ) :
     MeasurableSet[𝒢 j] (cleanBdd Y D E i j) := by
   refine MeasurableSet.biUnion (Finset.range j).countable_toSet (fun k hk ↦ ?_)
-  rw [Finset.mem_coe, Finset.mem_range] at hk
+  rw [Finset.mem_range] at hk
   have hY : MeasurableSet[𝒢 j] (Y k ⁻¹' E) := (hYlt k j hk) hE
   have hH : MeasurableSet[𝒢 j] (hitEvent D k i) :=
     (𝒢.mono hk.le) _ (measurableSet_filt_hitEvent hD k i)
@@ -537,7 +537,8 @@ omit [MeasurableSingletonClass 𝓐] in
 /-- **Discharge of the freshness hypothesis.** For the arm-`k` selector in a stationary environment,
 `μ (Y j ⁻¹' E ∩ S) = (ν k) E · μ S` whenever `S` is measurable in the action-augmented filtration
 and forces `A j = k`: there the conditional law of the response `Y j` is the constant `ν k`. -/
-lemma hfact_stationaryEnv {Y : ℕ → Ω → ℝ} (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) μ) (k : 𝓐)
+lemma hfact_stationaryEnv {Y : ℕ → Ω → ℝ} (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) μ)
+    (k : 𝓐)
     (j : ℕ) {E : Set ℝ} (hE : MeasurableSet E) {S : Set Ω}
     (hS : MeasurableSet[h.filtrationAction j] S)
     (hSsub : S ⊆ {ω | actionIndicator A k j ω = 1}) :
@@ -574,14 +575,14 @@ lemma hfact_stationaryEnv {Y : ℕ → Ω → ℝ} (h : IsAlgEnvSeq O A Y alg (s
 environment with per-arm reward kernel `ν`, if arm `k` is pulled infinitely often almost surely,
 then the responses observed at the pulls of arm `k`, `sampledSeq Y (actionIndicator A k)`, are
 independent. -/
-lemma iIndepFun_sampledResponse {Y : ℕ → Ω → ℝ} (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) μ)
+lemma iIndepFun_sampledResponse {Y : ℕ → Ω → ℝ} (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) μ)
     (k : 𝓐) (hk_inf : ∀ᵐ ω ∂μ, {j | A j ω = k}.Infinite) :
     iIndepFun (sampledSeq Y (actionIndicator A k)) μ := by
   set 𝒢 := h.filtrationAction with h𝒢
   have : IsProbabilityMeasure (ν k) := IsMarkovKernel.isProbabilityMeasure k
   have hDinf : ∀ᵐ ω ∂μ, {j | actionIndicator A k j ω = 1}.Infinite := by
     filter_upwards [hk_inf] with ω hω
-    rwa [Set.ext (fun j ↦ actionIndicator_eq_one_iff)]
+    simpa only [actionIndicator_eq_one_iff] using hω
   have hD : ∀ i, Measurable[𝒢 i] (actionIndicator A k i) := by
     intro i
     have hset : MeasurableSet[𝒢 i] {ω | A i ω = k} :=
@@ -595,14 +596,14 @@ lemma iIndepFun_sampledResponse {Y : ℕ → Ω → ℝ} (h : IsAlgEnvSeq O A Y 
 /-- **Doob optional skipping (identical distribution).** Each response sampled at a pull of arm `k`
 has law `ν k`. Together with `iIndepFun_sampledResponse` this says the sampled responses are i.i.d.
 with the arm's reward law. -/
-lemma map_sampledResponse_eq {Y : ℕ → Ω → ℝ} (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) μ)
+lemma map_sampledResponse_eq {Y : ℕ → Ω → ℝ} (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) μ)
     (k : 𝓐) (hk_inf : ∀ᵐ ω ∂μ, {j | A j ω = k}.Infinite) (m : ℕ) :
     μ.map (sampledSeq Y (actionIndicator A k) m) = ν k := by
   set 𝒢 := h.filtrationAction with h𝒢
   have : IsProbabilityMeasure (ν k) := IsMarkovKernel.isProbabilityMeasure k
   have hDinf : ∀ᵐ ω ∂μ, {j | actionIndicator A k j ω = 1}.Infinite := by
     filter_upwards [hk_inf] with ω hω
-    rwa [Set.ext (fun j ↦ actionIndicator_eq_one_iff)]
+    simpa only [actionIndicator_eq_one_iff] using hω
   have hD : ∀ i, Measurable[𝒢 i] (actionIndicator A k i) := by
     intro i
     have hset : MeasurableSet[𝒢 i] {ω | A i ω = k} :=

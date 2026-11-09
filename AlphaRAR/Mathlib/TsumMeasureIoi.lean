@@ -108,9 +108,9 @@ lemma tsum_measure_abs_sub_ge_sqrt_ne_top {ρ : Measure ℝ} [IsFiniteMeasure ρ
     simp only [Set.mem_ofPred_eq] at hx ⊢
     exact lt_of_lt_of_le
       (Real.sqrt_lt_sqrt (Nat.cast_nonneg i) (by exact_mod_cast Nat.lt_succ_self i)) hx
-  rw [tsum_eq_zero_add' ENNReal.summable]
+  rw [tsum_eq_zero_add' CompleteLattice.summable]
   refine ENNReal.add_ne_top.mpr ⟨measure_ne_top _ _, ?_⟩
   exact ne_top_of_le_ne_top (tsum_measure_abs_sub_gt_sqrt_ne_top θ hρ2)
-    (ENNReal.tsum_le_tsum hbound)
+    (tsum_le_tsum hbound)
 
 end AlphaRAR

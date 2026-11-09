@@ -39,8 +39,9 @@ variable {Ω : Type*} {mΩ : MeasurableSpace Ω}
   {O : ℕ → Ω → Unit} {A : ℕ → Ω → 𝓐} {Y : ℕ → Ω → ℝ} {alg : Algorithm Unit 𝓐 ℝ}
   {P : Measure Ω} [IsProbabilityMeasure P]
 
+omit [IsProbabilityMeasure P] in
 /-- The self-normalized response martingale `ω ↦ (√N_{n,k})⁻¹ Q_{n,k}` is measurable. -/
-lemma measurable_respSelfNorm (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐) (n : ℕ) :
+lemma measurable_respSelfNorm (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐) (n : ℕ) :
     Measurable (fun ω ↦ (√(pullCount A k n ω : ℝ))⁻¹ * respMart ν A Y k n ω) :=
   (((measurable_of_countable _).comp (measurable_pullCount h.measurable_action k n)).sqrt.inv).mul
     (measurable_respMart h k n)
@@ -52,7 +53,7 @@ deterministic `c_n → ∞`, the response martingale normalized by its own rando
 `Q_{n,k}/√N_{n,k} ⇒ 𝒩(0, V_k)`, where `V_k = Var[id; ν k]`. No positivity of the limiting proportion
 is required, so this holds for sparse targets `v_k = 0`. -/
 lemma respMart_selfNorm_anscombe_tendsto
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐)
     (hk_inf : ∀ᵐ ω ∂P, {j | A j ω = k}.Infinite)
     (hνk : MemLp id 2 (ν k))
     {c : ℕ → ℕ} (hc : Tendsto c atTop atTop)
@@ -69,7 +70,8 @@ lemma respMart_selfNorm_anscombe_tendsto
     Measurable.ite ((h.adapted_action_filtrationAction i) (measurableSet_singleton k))
       measurable_const measurable_const
   have hDinf : ∀ᵐ ω ∂P, {j | D j ω = 1}.Infinite := by
-    filter_upwards [hk_inf] with ω hω; rwa [Set.ext (fun j ↦ actionIndicator_eq_one_iff)]
+    filter_upwards [hk_inf] with ω hω
+    simpa only [hDdef, actionIndicator_eq_one_iff] using hω
   have hCmeas : ∀ i, Measurable (sampledClean Y D i) :=
     fun i ↦ measurable_sampledClean h.measurable_feedback hD𝒢 i
   have hmapC : ∀ i, P.map (sampledClean Y D i) = ν k := fun i ↦
@@ -135,9 +137,9 @@ lemma respMart_selfNorm_anscombe_tendsto
   congr 1
   exact Finset.sum_congr rfl fun i _ ↦ (hω i).symm
 
-omit [DecidableEq 𝓐] in
+omit [DecidableEq 𝓐] [IsProbabilityMeasure P] in
 /-- The per-arm estimator `θ̂_{n,k}` is measurable. -/
-lemma measurable_estimator_arm (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐) (θ₀ : ℝ)
+lemma measurable_estimator_arm (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐) (θ₀ : ℝ)
     (n : ℕ) :
     Measurable (fun ω ↦ estimator (fun j ↦ actionIndicator A k j ω) (Y · ω) θ₀ n) := by
   have harm : ∀ j, Measurable (fun ω ↦ actionIndicator A k j ω) := fun j ↦
@@ -148,8 +150,10 @@ lemma measurable_estimator_arm (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) 
     ((Finset.measurable_sum _ fun j _ ↦ (harm j).mul (h.measurable_feedback j)).add_const θ₀)
     ((measurable_count_actionIndicator h k n).add_const 1)
 
+omit [IsProbabilityMeasure P] in
 /-- The self-normalized estimator error `ω ↦ √N_{n,k}(θ̂_{n,k} - θ_k)` is measurable. -/
-lemma measurable_estimatorSqrtN (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐) (θ₀ : ℝ)
+lemma measurable_estimatorSqrtN (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐)
+    (θ₀ : ℝ)
     (n : ℕ) :
     Measurable (fun ω ↦ √(pullCount A k n ω : ℝ)
       * (estimator (fun j ↦ actionIndicator A k j ω) (Y · ω) θ₀ n - ν.means k)) :=
@@ -165,7 +169,7 @@ proportion is required, so this is the componentwise ingredient of the sparse CL
 `respMart_selfNorm_anscombe_tendsto` via the exact Bahadur identity `estimator_sub_eq` and two
 Slutsky steps (the scaling factors `N/(N+1) → 1` and `√N/(N+1) → 0` in probability). -/
 lemma estimator_sqrtN_anscombe_tendsto
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐)
     (hk_inf : ∀ᵐ ω ∂P, {j | A j ω = k}.Infinite)
     (hνk : MemLp id 2 (ν k)) (θ₀ : ℝ)
     {c : ℕ → ℕ} (hc : Tendsto c atTop atTop)
@@ -178,7 +182,8 @@ lemma estimator_sqrtN_anscombe_tendsto
   -- pull count `→ ∞` a.e. (from infinitely many pulls)
   have hpcinf : ∀ᵐ ω ∂P, Tendsto (fun n ↦ (pullCount A k n ω : ℝ)) atTop atTop := by
     have hDinf : ∀ᵐ ω ∂P, {j | actionIndicator A k j ω = 1}.Infinite := by
-      filter_upwards [hk_inf] with ω hω; rwa [Set.ext fun j ↦ actionIndicator_eq_one_iff]
+      filter_upwards [hk_inf] with ω hω
+      simpa only [actionIndicator_eq_one_iff] using hω
     filter_upwards [hDinf] with ω hinf
     exact tendsto_natCast_atTop_atTop.comp
       ((hitCount_tendsto_atTop (D := actionIndicator A k) hinf).congr fun n ↦

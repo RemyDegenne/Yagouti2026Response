@@ -29,7 +29,7 @@ throttle hypothesis of `aRTS_consistency`, and `aRTS_consistency_of_isARTS` conc
 allocation proportions converge a.s. The linchpin is that the process selection probability
 `P[𝟙{A_{n+1}=k} | ℱ_n]` equals `(policy n (history n) {k})` a.e. — a
 conditional-expectation-from-conditional-distribution computation
-(`HasCondDistrib.condExp_comp_eq`, via the algorithm's `hasCondDistrib_action`).
+(`HasCondDistrib.condExp_comp_ae_eq`, via the algorithm's `hasCondDistrib_action`).
 
 ## Main results
 
@@ -56,8 +56,9 @@ variable {Ω 𝓐 : Type*} {mΩ : MeasurableSpace Ω} {m𝓐 : MeasurableSpace �
   {O : ℕ → Ω → Unit} {A : ℕ → Ω → 𝓐} {Y : ℕ → Ω → ℝ} {alg : Algorithm Unit 𝓐 ℝ}
 
 -- `[StandardBorelSpace 𝓐] [Nonempty 𝓐]` are needed only by the lemmas passing through
--- `HasCondDistrib.condExp_comp_eq` on the action and their consequences, and `[Fintype 𝓐]` only by
--- the consistency corollaries; they are attached to those declarations rather than the whole file.
+-- `HasCondDistrib.condExp_comp_ae_eq` on the action and their consequences, and `[Fintype 𝓐]` only
+-- by the consistency corollaries; they are attached to those declarations rather than the whole
+-- file.
 
 /-! ### History-level plug-in target and the family predicate -/
 
@@ -116,14 +117,14 @@ omit [DecidableEq 𝓐] in
 For `m = n+1`, the aRTS selection probability `p_{n+1,k} = P[𝟙{A_{n+1}=k} | ℱ_n]` equals, almost
 surely, the probability the policy assigns to arm `k` given the history:
 `(alg.policy (n+1) (history O A Y (n+1) ω, ()) {k}).toReal`. Proved from the algorithm's
-`hasCondDistrib_action` via `HasCondDistrib.condExp_comp_eq` applied to the indicator
+`hasCondDistrib_action` via `HasCondDistrib.condExp_comp_ae_eq` applied to the indicator
 `g = 𝟙_{· = k}`, the conditioning σ-algebra being identified by
 `filtrationObs_succ_eq_filtration`. -/
 @[specifies aRTSSelProb "identifies the conditional expectation with the quantity a designer \
 controls — the mass the policy puts on arm `k` given the history. Without this the definition \
 would be a probabilistic object with no operational meaning"]
 lemma aRTSSelProb_succ_ae [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐) (n : ℕ) :
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐) (n : ℕ) :
     aRTSSelProb A k h.filtration P (n + 1)
       =ᵐ[P] fun ω ↦ (alg.policy (n + 1) (history O A Y (n + 1) ω, ()) {k}).toReal := by
   let 𝔽 := h.filtration
@@ -142,7 +143,7 @@ lemma aRTSSelProb_succ_ae [StandardBorelSpace 𝓐] [Nonempty 𝓐]
     rw [hgeq]; exact integrable_actionIndicator P k (h.measurable_action (n + 1))
   have hbridge : P[fun ω ↦ g (A (n + 1) ω) | 𝔽.shiftDown (n + 1)]
       =ᵐ[P] fun ω ↦ ∫ a, g a ∂(alg.policy (n + 1) (history O A Y (n + 1) ω, ())) := by
-    have hcd := (h.hasCondDistrib_action (n + 1)).condExp_comp_eq
+    have hcd := (h.hasCondDistrib_action (n + 1)).condExp_comp_ae_eq
       ((h.measurable_history (n + 1)).prodMk (h.measurable_obs (n + 1))) hg hint
     rwa [← h.filtrationObs_eq_comap (n + 1), h.filtrationObs_succ_eq_filtration n] at hcd
   have hsel : aRTSSelProb A k 𝔽 P (n + 1) = P[fun ω ↦ g (A (n + 1) ω) | 𝔽.shiftDown (n + 1)] := by
@@ -166,7 +167,7 @@ on arbitrary histories, rather than on the realised process, costs nothing",
   specifies aRTSUnder "fixes the sense of the inequality: `aRTSUnder` is the *under*-sampled event \
 `N ≤ m ρ̂`, so it is its complement that triggers the throttle"]
 lemma throttle_of_isARTS [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     {θ₀ : 𝓐 → ℝ} {T : (𝓐 → ℝ) → 𝓐 → ℝ} {α : ℝ} (hARTS : IsARTS alg θ₀ T α) (k : 𝓐) :
     ∀ᵐ ω ∂P, ∀ m, ¬ aRTSUnder A Y θ₀ T k ω m →
       aRTSSelProb A k h.filtration P m ω
@@ -198,7 +199,7 @@ plug-in targets converge to a common limit: `N_{n,k}/n → u_k` and `ρ̂_{n,k} 
 @[specifies IsARTS "the membership condition is strong enough to be worth having: it alone (plus \
 Condition **A** and a simplex-valued continuous `T`) forces the allocation proportions to converge"]
 lemma aRTS_consistency_of_isARTS [Fintype 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) {θ₀ : 𝓐 → ℝ} {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     {α : ℝ} (hα : α ∈ Set.Icc (0 : ℝ) 1) (hARTS : IsARTS alg θ₀ T α) :
@@ -214,7 +215,7 @@ of the loglog estimator rate `abs_estimator_sub_le_rate_loglog_of_proportion` on
 limit `u_k` is named as a function of `ω` and its strict positivity `u_k > 0` (the non-sparsity
 of Condition **B**) is supplied. -/
 lemma aRTS_pullCount_div_ae_tendsto [Fintype 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) {θ₀ : 𝓐 → ℝ} {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     {α : ℝ} (hα : α ∈ Set.Icc (0 : ℝ) 1) (hARTS : IsARTS alg θ₀ T α) :
@@ -234,7 +235,7 @@ a.s. to the true parameter: `θ̂_n → θ = (ν.means k)_k`. The aRTS consisten
 infinitely often — and identifies each estimator limit as its arm mean. `hTpos` is the only
 hypothesis beyond those of `aRTS_consistency_of_isARTS`. -/
 lemma aRTS_theta_consistent [Fintype 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) {θ₀ : 𝓐 → ℝ} {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     {α : ℝ} (hα : α ∈ Set.Icc (0 : ℝ) 1) (hARTS : IsARTS alg θ₀ T α)
@@ -252,7 +253,7 @@ paper). For an aRTS design, under Condition **B** the allocation proportion conv
 `ρ̂_{n,k} = T(θ̂_n)_k → T(θ)_k` by continuity) with the joint aRTS consistency (`N_{n,k}/n` and
 `ρ̂_{n,k}` share the limit `u_k`) identifies `u_k = T(θ)_k = v_k`. -/
 lemma aRTS_proportion_tendsto [Fintype 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) {θ₀ : 𝓐 → ℝ} {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     {α : ℝ} (hα : α ∈ Set.Icc (0 : ℝ) 1) (hARTS : IsARTS alg θ₀ T α)

@@ -105,7 +105,7 @@ stationary environment, if arm `k` is pulled infinitely often a.s. and its rewar
 `|Q_k n| ≤ β √(2 · Var[id; ν k] · N_{n,k} · log log N_{n,k})`, where `N_{n,k}` is the number of
 pulls of arm `k` before `n`. In particular `Q_k n = O(√(N_{n,k} log log N_{n,k}))`. -/
 lemma abs_respMart_le_sqrt_nat_mul_loglog
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐)
     (hk_inf : ∀ᵐ ω ∂P, {j | A j ω = k}.Infinite)
     (hνk : MemLp id 2 (ν k)) :
     ∀ᵐ ω ∂P, ∀ β : ℝ, 1 < β → ∀ᶠ n in atTop,
@@ -125,7 +125,8 @@ lemma abs_respMart_le_sqrt_nat_mul_loglog
     exact Measurable.ite ((h.adapted_action_filtrationAction i) (measurableSet_singleton k))
       measurable_const measurable_const
   have hDinf : ∀ᵐ ω ∂P, {j | D j ω = 1}.Infinite := by
-    filter_upwards [hk_inf] with ω hω; rwa [Set.ext (fun j ↦ actionIndicator_eq_one_iff)]
+    filter_upwards [hk_inf] with ω hω
+    simpa only [hDdef, actionIndicator_eq_one_iff] using hω
   have hCmeas : ∀ i, Measurable (sampledClean Y D i) :=
     fun i ↦ measurable_sampledClean h.measurable_feedback hD𝒢 i
   have hmapC : ∀ i, P.map (sampledClean Y D i) = ν k := fun i ↦
@@ -215,7 +216,7 @@ Arm `k` being pulled infinitely often is *derived* from that positive proportion
 condition `ν k ∈ L²` (Condition **A**). No positivity of `Var[id; ν k]` is needed — a zero-variance
 arm has `Q_k ≡ 0`. -/
 lemma ae_eventually_abs_respMart_le_sqrt_nat_mul_loglog_of_proportion
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐)
     (hνk : MemLp id 2 (ν k))
     {v : Ω → ℝ} (hv : ∀ᵐ ω ∂P, 0 < v ω)
     (hN : ∀ᵐ ω ∂P, Tendsto (fun n ↦ (pullCount A k n ω : ℝ) / (n : ℝ)) atTop (𝓝 (v ω))) :
@@ -236,7 +237,7 @@ estimate `abs_estimator_sub_le_rate_loglog_ae`. Its only probabilistic input is 
 `N_{n,k}/n → v_k > 0` — infinitely-many pulls of arm `k` is derived from it — together with the
 reward-law moment condition `ν k ∈ L²` (Condition **A**). -/
 lemma abs_estimator_sub_le_rate_loglog_of_proportion
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐) (θ₀ : ℝ)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐) (θ₀ : ℝ)
     (hνk : MemLp id 2 (ν k))
     {v : Ω → ℝ} (hv : ∀ᵐ ω ∂P, 0 < v ω)
     (hN : ∀ᵐ ω ∂P, Tendsto (fun n ↦ (pullCount A k n ω : ℝ) / (n : ℝ)) atTop (𝓝 (v ω))) :
@@ -256,7 +257,7 @@ layer — instead of a globally-named limit, and (ii) states it with the assignm
 instance for the pull count (the two agree by `count_indicator_eq_pullCount`). This is the form
 consumed when discharging `rho_rate`'s per-arm rate hypothesis for a concrete design. -/
 lemma abs_estimator_sub_le_rate_loglog_of_pos_count
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐) (θ₀ : ℝ)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐) (θ₀ : ℝ)
     (hνk : MemLp id 2 (ν k))
     (hpp : ∀ᵐ ω ∂P, ∃ uk : ℝ, 0 < uk ∧ Tendsto (fun n ↦ count (fun j ↦ actionIndicator A k j ω) n
       / (n : ℝ)) atTop (𝓝 uk)) :

@@ -166,12 +166,14 @@ structure IsARTSFE [DecidableEq 𝓐] (alg : Algorithm Unit 𝓐 ℝ) (θ₀ : �
           (pullCount' n hist j : ℝ) < (pullCount' n hist k : ℝ)) →
         alg.policy n (hist, ()) {k} = 0
 
+omit [IsProbabilityMeasure P] in
 /-- The level sets of the forced-exploration predicate are measurable (a union of the two
 measurable events `N ≤ m ρ̂` and `N ≤ h(m)`). -/
 lemma measurableSet_aRTSFEUnder [DecidableEq 𝓐] [Finite 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (θ₀ : 𝓐 → ℝ) {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T) (hsched : ℕ → ℝ) (k : 𝓐) (m : ℕ) :
     MeasurableSet {ω | aRTSFEUnder A Y θ₀ T hsched k ω m} := by
+  simp only [aRTSFEUnder, Set.ofPred_or]
   refine (measurableSet_aRTSUnder h θ₀ hT k m).union ?_
   simp only [← count_indicator_eq_pullCount]
   exact measurableSet_le (measurable_count_actionIndicator h k m) measurable_const
@@ -290,7 +292,8 @@ Nothing beyond `h(n) = o(n)` is asked of the schedule. Together with `aRTSFE_sma
 is where the paper's condition (ii), `h(n) = o(√n)`, would be used; Proposition 1 of
 `maths/sparse-clt-fix.md` replaces it, which is what lets `IsExplorationSchedule` keep only `o(n)`
 and makes the sparse regime (`h(n) ≫ √n`) reachable. -/
-lemma aRTSFE_smallness_op [DecidableEq 𝓐] [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma aRTSFE_smallness_op [DecidableEq 𝓐] [Finite 𝓐]
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (θ₀ : 𝓐 → ℝ) {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T)
     {hsched : ℕ → ℝ} (hh : IsExplorationSchedule hsched) (k : 𝓐) {v : ℝ} (hv : 0 < v)
     (hNconv : ∀ᵐ ω ∂P, Tendsto (fun n ↦ (pullCount A k n ω : ℝ) / (n : ℝ))
@@ -742,11 +745,12 @@ lemma not_aRTSFEUnder_of_sched_lt [DecidableEq 𝓐] (ω : Ω) {hsched g : ℕ �
     _ = hsched m := by field_simp
     _ < _ := hnot
 
+omit [IsProbabilityMeasure P] in
 /-- The count `N_{m,k}` is a **previous-history** statistic: it reads only `A_0,…,A_{m-1}`. Stated
 in `count` form: it is the plumbing behind the `shiftDown`-measurability of the design predicates,
 whose proofs work with the indicator sums. -/
 lemma measurable_shiftDown_count
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐) (m : ℕ) :
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐) (m : ℕ) :
     Measurable[h.filtration.shiftDown m]
       (fun ω ↦ count (fun j ↦ actionIndicator A k j ω) m) := by
   cases m with
@@ -761,13 +765,14 @@ lemma measurable_shiftDown_count
       (h.adapted_action.measurable_le
         (by omega : j ≤ p)))
 
+omit [IsProbabilityMeasure P] in
 /-- The forced-exploration predicate at round `m` is a **previous-history** event: both the count
 `N_{m,k}` and the plug-in target `ρ̂_{m,k}` are built from `A_0,…,A_{m-1}` and `Y_0,…,Y_{m-1}`.
 
 This is what lets the throttle be applied *inside* a conditional expectation given `ℱ_{m-1}`, and it
 is what makes the `α = 0` argument below work with no decay hypothesis at all. -/
 lemma measurableSet_shiftDown_aRTSFEUnder [DecidableEq 𝓐] [Finite 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ) {T : (𝓐 → ℝ) → 𝓐 → ℝ}
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ) {T : (𝓐 → ℝ) → 𝓐 → ℝ}
     (hT : Continuous T) (hsched : ℕ → ℝ) (k : 𝓐) (m : ℕ) :
     MeasurableSet[h.filtration.shiftDown m]
       {ω | aRTSFEUnder A Y θ₀ T hsched k ω m} := by
@@ -818,7 +823,7 @@ Both ways the aRTS family forbids a pull factor through this: the `α = 0` throt
 (`not_pulled_of_not_aRTSFEUnder_of_alpha_zero`) and forced exploration's exclusion of arms that are
 not least-sampled (`fe_of_isARTSFE`). -/
 lemma ae_action_ne_of_selProb_nonpos
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) {k : 𝓐} {S : ℕ → Set Ω}
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) {k : 𝓐} {S : ℕ → Set Ω}
     (hS : ∀ m, MeasurableSet[h.filtration.shiftDown m] (S m))
     (hsel : ∀ᵐ ω ∂P, ∀ m, ω ∈ S m →
       aRTSSelProb A k h.filtration P m ω
@@ -858,7 +863,7 @@ process-level throttle — the same bridge `IsARTS` enjoys",
 under-sampled *or* under-explored, so its negation carries both premises the `throttle` field \
 needs. Using a conjunction here would silently strengthen the design's obligation"]
 lemma throttle_of_isARTSFE [DecidableEq 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     {θ₀ : 𝓐 → ℝ} {T : (𝓐 → ℝ) → 𝓐 → ℝ} {hsched : ℕ → ℝ} {α : ℝ}
     (hFE : IsARTSFE alg θ₀ T hsched α) (k : 𝓐) :
     ∀ᵐ ω ∂P, ∀ m, ¬ aRTSFEUnder A Y θ₀ T hsched k ω m →
@@ -888,12 +893,13 @@ def feForbidden [DecidableEq 𝓐] (A : ℕ → Ω → 𝓐) (hsched : ℕ → �
       ∃ j, (pullCount A j m ω : ℝ) ≤ hsched m ∧
         (pullCount A j m ω : ℝ) < (pullCount A k m ω : ℝ))}
 
+omit [IsProbabilityMeasure P] in
 /-- `feForbidden` is a **previous-history** event: it is built from counts alone. -/
 @[specifies feForbidden "the reason the event is phrased through counts rather than through the \
 action: it is measurable for the *previous*-history σ-algebra, which is what lets a selection \
 probability of `0` on it be turned into \"arm `k` is a.s. not drawn\""]
 lemma measurableSet_shiftDown_feForbidden [Finite 𝓐] [DecidableEq 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (hsched : ℕ → ℝ) (k : 𝓐) (m : ℕ) :
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (hsched : ℕ → ℝ) (k : 𝓐) (m : ℕ) :
     MeasurableSet[h.filtration.shiftDown m]
       (feForbidden A hsched k m) := by
   have hcount : ∀ k' : 𝓐,
@@ -932,7 +938,7 @@ zero, so `feForbidden` is empty and there is nothing to prove. -/
 action-level rule the asymptotic theorems consume: whenever some arm is under-explored, the arm \
 actually drawn is a least-sampled under-explored one"]
 lemma fe_of_isARTSFE [Finite 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     {θ₀ : 𝓐 → ℝ} {T : (𝓐 → ℝ) → 𝓐 → ℝ} {hsched : ℕ → ℝ} {α : ℝ}
     (hFE : IsARTSFE alg θ₀ T hsched α) :
     ∀ᵐ ω ∂P, ∀ m, (∃ j, (pullCount A j m ω : ℝ) ≤ hsched m) →
@@ -991,7 +997,7 @@ is `aRTSFE_smallness`. -/
 consistency — no `o(√m)` condition is needed, which is precisely the point of weakening the \
 paper's definition"]
 theorem aRTSFE_proportion_tendsto [DecidableEq 𝓐] [Fintype 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
     (θ₀ : 𝓐 → ℝ) (T : (𝓐 → ℝ) → 𝓐 → ℝ) (hT : Continuous T)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     (α : ℝ) (hα : α ∈ Set.Icc (0 : ℝ) 1)
@@ -1025,7 +1031,7 @@ Condition **B** input (`hv`, `hNconv`) is the consistency this theorem already e
 theory as well, not only for consistency: under Condition **B** forced exploration switches \
 itself off, so the paper's `o(√m)` is never needed"]
 theorem aRTSFE_prop_dev [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
     (θ₀ : 𝓐 → ℝ) (T : (𝓐 → ℝ) → 𝓐 → ℝ)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     (α : ℝ) (hα : α ∈ Set.Icc (0 : ℝ) 1) (hα1 : α < 1)
@@ -1053,7 +1059,7 @@ a.s. for the `aRTSFE` family. A direct reuse of `prop_dev_ae_of_hitting`; the lo
 `rho_rate_of_hitting` and the smallness is `aRTSFE_smallness_upper`, whose Condition **B** input
 is the consistency this theorem already establishes. -/
 theorem aRTSFE_prop_dev_ae [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
     (θ₀ : 𝓐 → ℝ) (T : (𝓐 → ℝ) → 𝓐 → ℝ) (hT : Continuous T)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     (α : ℝ) (hα : α ∈ Set.Icc (0 : ℝ) 1) (hα1 : α < 1)
@@ -1081,7 +1087,7 @@ theorem aRTSFE_prop_dev_ae [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace
 `N_{n,k} - n v_k = O(√(n log log n))` a.s. for the `aRTSFE` family. A direct reuse of
 `count_sub_smul_ae_of_hitting`. -/
 theorem aRTSFE_count_sub_smul_ae [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
     (θ₀ : 𝓐 → ℝ) (T : (𝓐 → ℝ) → 𝓐 → ℝ) (hT : Continuous T)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     (α : ℝ) (hα : α ∈ Set.Icc (0 : ℝ) 1) (hα1 : α < 1)
@@ -1110,7 +1116,7 @@ equation (9) of Theorem 4.2 (ii)). The `√n`-scaled joint deviation vector
 family. A direct reuse of `clt_joint_of_hitting`; the smallness conditions are
 `aRTSFE_smallness_all` and `aRTSFE_smallness_op`. -/
 theorem aRTSFE_clt_joint [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (θ₀ : 𝓐 → ℝ) (T : (𝓐 → ℝ) → 𝓐 → ℝ)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     (α : ℝ) (hα : α ∈ Set.Icc (0 : ℝ) 1) (hα1 : α < 1)
@@ -1152,7 +1158,7 @@ hypothesis of the form "`ρ̂ ≤ g` for a deterministic `g`" is not dischargeab
 `not_aRTSFEUnder_of_sched_lt`. -/
 lemma not_pulled_of_not_aRTSFEUnder_of_alpha_zero [DecidableEq 𝓐] [Finite 𝓐]
     [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) {θ₀ : 𝓐 → ℝ} {T : (𝓐 → ℝ) → 𝓐 → ℝ}
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) {θ₀ : 𝓐 → ℝ} {T : (𝓐 → ℝ) → 𝓐 → ℝ}
     (hT : Continuous T) {hsched : ℕ → ℝ} (hARTSFE : IsARTSFE alg θ₀ T hsched 0) (k : 𝓐) :
     ∀ᵐ ω ∂P, ∀ m, ¬ aRTSFEUnder A Y θ₀ T hsched k ω m → A m ω ≠ k :=
   ae_action_ne_of_selProb_nonpos h
@@ -1423,7 +1429,7 @@ negligible: pulls the design was free *not* to make are `o(h(n))`, so forced exp
 fixes a sparse arm's sample size to first order"]
 lemma throttled_count_div_sched_tendsto_zero [DecidableEq 𝓐] [Finite 𝓐]
     [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) {hsched : ℕ → ℝ} {θ₀ : 𝓐 → ℝ}
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) {hsched : ℕ → ℝ} {θ₀ : 𝓐 → ℝ}
     {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T) (hTnn : ∀ z k, 0 ≤ T z k) {k : 𝓐} {α : ℝ}
     (hα : 0 ≤ α)
     (hARTSFE : IsARTSFE alg θ₀ T hsched α)
@@ -1531,7 +1537,7 @@ Both arms are then covered by the *same* per-arm normalizer
 The split is unavoidable: not every arm can be FE-fed, since `∑_a N_{n,a} = n` while
 `card 𝓐 · h(n) = o(n)`. -/
 lemma aRTSFE_sparse_clt [Fintype 𝓐] [DecidableEq 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ)
     (hνk : ∀ a, MemLp id 2 (ν a))
     {hsched : ℕ → ℝ} (hh : IsExplorationSchedule hsched)
     (hshift : Tendsto
@@ -1599,7 +1605,7 @@ this uses *only* `N_{n,k} → ∞` (no positive proportion). Via the exact Bahad
 LIL `abs_respMart_le_sqrt_nat_mul_loglog` (`|Q_{n,k}| ≤ 2√(2 V_k N_{n,k} log log N_{n,k})`), the two
 terms are `O(√(N log log N)/N)` and `O(1/N)`, both `O(√(log log N/N))` (once `log log N ≥ 1`). -/
 lemma abs_estimator_sub_le_rate_loglog_N [DecidableEq 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (k : 𝓐)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (k : 𝓐)
     (θ₀ : ℝ) (hνk : MemLp id 2 (ν k))
     (hNinf : ∀ᵐ ω ∂P, Tendsto (fun n ↦ (pullCount A k n ω : ℝ)) atTop atTop) :
     ∀ᵐ ω ∂P, ∃ C', ∀ᶠ n in atTop,
@@ -1675,7 +1681,7 @@ enters through the design predicate `IsARTSFE`: its throttle field feeds the mat
 forced-exploration field the no-starvation. -/
 theorem aRTSFE_sparse_rate_of_isARTSFE [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐]
     [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
     (θ₀ : 𝓐 → ℝ) (T : (𝓐 → ℝ) → 𝓐 → ℝ) (hT : Continuous T)
     (hTnn : ∀ z k, 0 ≤ T z k) (hTsum : ∀ z, ∑ k, T z k = 1)
     (α : ℝ) (hα : α ∈ Set.Icc (0 : ℝ) 1)
@@ -2049,7 +2055,7 @@ the counter `E n = ∑_{i<n} 𝟙{throttled pull of k at i}` has all three prope
 Note `n₀` and `g` are allowed to depend on `ω`, which is essential: the decay constant comes
 from the law of the iterated logarithm and is genuinely random. -/
 lemma fEfed_of_decay [Finite 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) {hsched : ℕ → ℝ} {θ₀ : 𝓐 → ℝ}
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) {hsched : ℕ → ℝ} {θ₀ : 𝓐 → ℝ}
     {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T) (hTnn : ∀ z k, 0 ≤ T z k) {k : 𝓐} {α : ℝ}
     (hα : 0 ≤ α)
     (hARTSFE : IsARTSFE alg θ₀ T hsched α)
@@ -2101,7 +2107,7 @@ eventually fed only by forced exploration; here that assumption is *proved*, fro
 * `hT2` — the target is `C²` at `Θ` on the sparse arms. -/
 theorem aRTSFE_sparse_clt_of_contDiffAt [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐]
     [Nonempty 𝓐]
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ)
     (hνk : ∀ a, MemLp id 2 (ν a))
     {hsched : ℕ → ℝ} (hh : IsExplorationSchedule hsched)
     (hshift : Tendsto

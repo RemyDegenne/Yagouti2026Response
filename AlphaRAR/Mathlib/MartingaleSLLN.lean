@@ -49,8 +49,7 @@ lemma martingale_ae_tendsto_of_eLpNorm_two_le [IsProbabilityMeasure μ]
     (hS : Martingale S ℱ μ) {C : ℝ≥0} (hbdd : ∀ n, eLpNorm (S n) 2 μ ≤ C) :
     ∀ᵐ ω ∂μ, ∃ c, Tendsto (S · ω) atTop (𝓝 c) :=
   hS.submartingale.exists_ae_tendsto_of_bdd (R := C) fun n ↦
-    le_trans (eLpNorm_le_eLpNorm_of_exponent_le (p := 1) (q := 2) one_le_two
-      ((hS.stronglyMeasurable n).mono (ℱ.le n)).aestronglyMeasurable) (hbdd n)
+    le_trans (eLpNorm_le_eLpNorm_of_exponent_le (p := 1) (q := 2) one_le_two) (hbdd n)
 
 /-- Integral form of `martingale_ae_tendsto_of_eLpNorm_two_le`: a martingale `S` with
 square-integrable values and `∫ (S n)² ∂μ ≤ C` for all `n` converges a.e. to a finite limit. The

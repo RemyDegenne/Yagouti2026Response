@@ -12,8 +12,9 @@ public import LeanMachineLearning.ForMathlib.Probability.HasCondDistrib
 
 If a real-valued `Y` has conditional distribution `κ` given `X` (`HasCondDistrib Y X κ P`) and `P`
 is finite, then `Y ∈ L²` as soon as the conditional laws `κ x` have uniformly bounded second
-moments. (The companion statement `HasCondDistrib.condExp_comp_eq`, the conditional expectation of
-`g ∘ Y` given `σ(X)`, lives in `LeanMachineLearning.SequentialLearning.Means`.)
+moments. (The companion statement `HasCondDistrib.condExp_comp_ae_eq`, the conditional
+expectation of `g ∘ Y` given `σ(X)`, lives in
+`LeanMachineLearning.ForMathlib.Probability.HasCondDistrib`.)
 
 This belongs in Mathlib next to `HasCondDistrib`.
 

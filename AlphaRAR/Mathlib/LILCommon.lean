@@ -88,13 +88,13 @@ lemma ae_eventually_notMem_of_eventually_le [IsFiniteMeasure μ] {s : ℕ → Se
     ∀ᵐ ω ∂μ, ∀ᶠ k in atTop, ω ∉ s k := by
   obtain ⟨k₀, hk₀⟩ := eventually_atTop.mp hle
   refine ae_eventually_notMem ?_
-  rw [← ENNReal.sum_add_tsum_compl (Finset.range k₀) fun k ↦ μ (s k)]
+  rw [← sum_add_tsum_compl (Finset.range k₀) fun k ↦ μ (s k)]
   refine ENNReal.add_ne_top.mpr
     ⟨(ENNReal.sum_lt_top.mpr fun k _ ↦ measure_lt_top μ (s k)).ne, ?_⟩
   have key : (∑' i : ↥((↑(Finset.range k₀) : Set ℕ)ᶜ), μ (s ↑i))
       ≤ ∑' k, ENNReal.ofReal (f k) := by
-    refine le_trans (ENNReal.tsum_le_tsum fun i ↦ ?_)
-      (ENNReal.tsum_comp_le_tsum_of_injective Subtype.coe_injective _)
+    refine le_trans (tsum_le_tsum fun i ↦ ?_)
+      (tsum_comp_le_tsum_of_injective Subtype.coe_injective _)
     obtain ⟨k, hk⟩ := i
     rw [Finset.coe_range, Set.mem_compl_iff, Set.mem_Iio, not_lt] at hk
     exact hk₀ k hk
