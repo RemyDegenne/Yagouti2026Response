@@ -2,151 +2,40 @@
 
 Machine-checkable verification, with [leanprover/comparator](https://github.com/leanprover/comparator),
 that this repository proves the headline results claimed in [`formalization.yaml`](../formalization.yaml)
-— without having to read (or trust) any of the 22k lines of Lean in `AlphaRAR/`.
+without having to read or trust the Lean development in `AlphaRAR/`.
 
-Each challenge is **one self-contained file whose transitive imports resolve to Mathlib and Lean
-core only**. That exact shape is what the [Palomar registry](https://palomar-registry.org/)'s
-mechanical verification enforces: it compiles the challenge file standalone (plain `lean`, with a
-search path containing nothing but the toolchain and the allowlisted Mathlib closure), so the
-challenge can import no LML, no project modules, and no sibling helper modules.
+**Status.** Every challenge is proved. The challenges were regenerated on 2026-11-09, when the project
+moved to LMLExplore; `scripts/comparator-verify.sh` has to be run again on them.
+
+Each challenge is one file that imports LML and Mathlib modules only (the project does not use
+LMLExplore's definitions yet), and modules of Lean's own library, no project modules and no
+sibling helpers.
 
 ## The trust story
 
-For each headline result there is a **challenge** file and a JSON config:
+For each headline theorem `AlphaRAR.<name>` there is a challenge file `Challenge_<name>.lean` and a
+config `<name>.json`; the list is `targets.txt`:
 
-| result (`formalization.yaml`) | challenge | config |
-|---|---|---|
-| `AlphaRAR.aRTS_LLN` | `Challenge_aRTS_LLN.lean` | `aRTS_LLN.json` |
-| `AlphaRAR.aRTS_clt_joint` | `Challenge_aRTS_clt_joint.lean` | `aRTS_clt_joint.json` |
-| `AlphaRAR.aRTS_prop_dev` | `Challenge_aRTS_prop_dev.lean` | `aRTS_prop_dev.json` |
-| `AlphaRAR.aRTS_prop_dev_ae` | `Challenge_aRTS_prop_dev_ae.lean` | `aRTS_prop_dev_ae.json` |
-| `AlphaRAR.aRTSFE_sparse_clt_of_contDiffAt` | `Challenge_aRTSFE_sparse_clt_of_contDiffAt.lean` | `aRTSFE_sparse_clt_of_contDiffAt.json` |
-| `AlphaRAR.aRTSFE_sparse_rate_of_isARTSFE` | `Challenge_aRTSFE_sparse_rate.lean` | `aRTSFE_sparse_rate.json` |
+| paper result | challenge(s) |
+|---|---|
+| Theorem 4.1 (strong consistency and rates) | `aRTS_LLN` |
+| Theorem 4.2 (i), equation (5) (proportion deviations, `o_P(√n)`) | `aRTS_prop_dev` |
+| Theorem 4.2 (i), equation (6) (proportion deviations, `O(√(n log log n))` a.s.) | `aRTS_prop_dev_ae` |
+| Theorem 4.2 (ii), equation (9) (joint asymptotic normality) | `aRTS_clt_joint` |
+| Theorem 5.2 (consistency and rate for sparse targets) | `aRTSFE_sparse_rate_of_isARTSFE` |
+| Corollary 5.3 (componentwise CLT, under the corrected schedule condition) | `aRTSFE_sparse_clt_of_contDiffAt` |
 
-Each challenge (360–420 lines) states the theorem with `sorry`, with **every** definition the
-statement rests on inlined verbatim: the project's definitions, and the handful of
-[LML](https://github.com/LeanMachineLearning/LML) declarations they build on (`Round`, `Hist`,
-`Algorithm`, `Environment`, `history`, `IsAlgEnvSeq`, `stationaryEnv`/`obliviousEnv`, `pullCount`,
-`pullCount'`, `sumRewards'`), which appear as clearly marked "vendored from LML" sections. The
-`sorry`s in these files are the point: they are restatements to be verified, not part of the
-formalization, and are excluded from `formalization.yaml`'s `sorry_count` (as the v0.4 spec
-prescribes).
+Each challenge states the theorem with `sorry`, with every definition of the project that the
+statement rests on copied verbatim from its source by
+[challenge-gen](https://github.com/LeanTrustBuilders/challenge-gen); the definitions of
+LMLExplore, LML, Tau Ceti and Mathlib that it uses are imported. A reader checks the *statement*
+(the challenge file) by hand and lets comparator check that the project proves exactly it, with
+no axioms beyond `propext`, `Classical.choice` and `Quot.sound`, the proofs replayed through the
+kernel. The config also lists the lemmas the definitions use, left `sorry` in the challenge and
+proved by the project, and the theorems Lean makes of the proofs inside definitions.
 
-`Solution.lean` is the other side: it just imports the project modules that prove the results.
+## Regenerating and running
 
-A skeptical reader therefore only has to
-1. read the one challenge file against the paper's statement, trusting only Mathlib for the
-   imported notions, and
-2. run comparator on the corresponding config.
-
-If comparator succeeds, every theorem in the config's `theorem_names` is guaranteed to
-1. be proved in this project **with exactly the challenged statement** (comparator checks that
-   every constant in the statement's transitive closure — the inlined project definitions and
-   the vendored LML declarations included, down to auxiliary `_proof_*` constants — is
-   *identical* between the challenge and the project),
-2. use no axioms beyond `propext`, `Classical.choice`, `Quot.sound`, and
-3. be accepted by the Lean kernel, replayed from a `lean4export` dump inside a sandbox.
-
-In particular the vendored LML sections cannot silently drift from upstream: comparator compares
-them constant-for-constant against the LML package the project is built with.
-
-The two CLT challenges state convergence in distribution with Mathlib's `TendstoInDistribution`
-(limit the identity on the Gaussian law), so their statements mention no auxiliary lemma: the
-measurability of the random vectors is part of the conclusion, not of the statement.
-
-The sparse-rate challenge states `AlphaRAR.aRTSFE_sparse_rate_of_isARTSFE`, Theorem 5.2 of the
-paper, from the history-level design predicate `IsARTSFE` (the same packaging as the other
-headline results). That packaging is what makes the statement challengeable at all: a form
-taking the process-level throttle as a hypothesis would mention LML's history filtration
-`IsAlgEnvSeq.filtration`, whose definition rests on a *module-private* auxiliary constant (see
-*Maintenance*) that no restatement outside LML can reproduce — so such a form cannot be challenged
-under a Mathlib-only import closure. Every αRTS-FE result therefore states its design hypothesis
-as `IsARTSFE` rather than as a throttle.
-
-## Running it
-
-```bash
-scripts/comparator-verify.sh                 # all six configs
-scripts/comparator-verify.sh aRTS_LLN        # one config
-scripts/comparator-verify.sh --insecure ...  # without a landrun sandbox (see below)
-```
-
-The script clones and builds comparator and `lean4export` (pinned revision, project toolchain)
-into `~/.cache/alpha-rar/comparator-tools`, then runs each config from the repository root as
-
-```bash
-lake env path/to/comparator comparator/<name>.json
-```
-
-Comparator's sandboxing needs [landrun](https://github.com/Zouuup/landrun) (built from its `main`
-branch) in `PATH`. `--insecure` substitutes comparator's no-op development shim: the mathematical
-checks are identical, but an adversarial repository could then attack your machine or the checker
-during the build, so only use it on a repository you already trust — e.g. as a freshness check of
-your own tree, which is what CI does. For the full guarantee against a hostile repository, run it
-from a *fresh* checkout (never build the repo first: comparator must be the first thing that
-elaborates the challenge), with real landrun, wrapped as comparator's README recommends:
-
-```bash
-systemd-run --property=RestrictAddressFamilies=~AF_UNIX --user --pty -E PATH="$PATH" \
-  --working-directory "$(pwd)" -- bash -c 'scripts/comparator-verify.sh'
-```
-
-## Repository wiring
-
-All comparator modules form the single `Comparator` lake library, whose **root** is the stub
-`Comparator.lean` and whose real modules are `globs`. This is deliberate: `checkdecls` and referee
-import every *root* of every library in the workspace, and the challenge modules redeclare
-project and LML names, so they must never be roots. CI builds the library (so the challenges keep
-compiling and the stub's olean exists when `checkdecls` runs) but never imports the challenges
-together with `AlphaRAR`.
-
-## Maintenance
-
-The challenge files are generated by [Referee](https://github.com/LeanMachineLearning/exposition)'s
-standalone extraction (`referee collect` + `referee extract`; the files land in
-`<output>/html-multi/extracted/AlphaRAR___<name>.lean`), then post-processed: the LML imports of
-the extraction's frontier are removed, `Mathlib.Probability.HasCondDistrib`, `…HasLaw` and
-`…Martingale.BorelCantelli` are added, and the "vendored from LML" sections are spliced in after
-the namespace stubs (the same block in every challenge — declarations copied verbatim from LML,
-in original order).
-
-Comparator's exact-identity check makes elaboration details load-bearing; the rules learned here:
-
-- **One module, one owner for shared auxiliary proofs.** Identical embedded proof terms are
-  deduplicated per module: the first declaration mints `<name>._proof_N`, later ones in the same
-  module reuse it, but the same definitions split across two modules each mint their own. A
-  single-file challenge can only reproduce the *one-module* pattern — which is why
-  `propSqrtNVec`, `targetSqrtNVec` and `jointSqrtNVec` are deliberately defined together (and in
-  that order) in `AlphaRAR/YDK2026/PluginTargetCLT.lean`; see the comment there. If a challenge
-  fails with `Const does not match` on a `_proof_*`-bearing definition, check whether the
-  project mints the constant under the name the single-file elaboration would choose.
-- **Vendor each LML declaration under its own file's `variable` block.** The binder telescope
-  and universe parameters of a vendored constant are part of what comparator compares, and they
-  come from the `variable` line in scope, so a declaration must be copied together with the
-  context of *its* LML source file — not merged into a neighbouring vendored section. This bit
-  once: `sumRewards'` lives in `SequentialLearning/SumRewards.lean`, whose block supplies
-  `{𝓐 𝓨 Ω : Type*} … [DecidableEq 𝓐] [AddCommGroup 𝓨]`, but had been vendored inside the
-  `FiniteActions` section (which has no `𝓨` and no `AddCommGroup`), so it elaborated as the
-  `ℝ`-specialised `{𝓐} [DecidableEq 𝓐] … → ℝ`. When LML later generalised the reward type, all
-  six challenges failed — reported against `AlphaRAR.histTarget`, the first constant in the
-  closure whose *value* mentions the drifted one, not against `sumRewards'` itself. When a
-  mismatch names a definition that looks untouched, diff its dependencies' full
-  `set_option pp.all true` `#print` output between the challenge module and `Solution`.
-- **Module-private auxiliary constants are fatal** (name scheme `_private.<module>.0.<decl>…`,
-  e.g. minted by `grind` inside a definition): their names embed the defining module's name, so
-  no restatement can reproduce them. If one enters a statement's closure, the statement itself
-  has to avoid the offending definition — that is why the sparse-rate challenge targets the
-  `IsARTSFE` form (see above).
-- **Statements that mention lemmas** (e.g. a proof term inside a subtype) would need those
-  lemmas listed as extra `theorem_names` targets, `sorry`d in the challenge; the current
-  statements avoid this (convergence in distribution is `TendstoInDistribution`, not a
-  `ProbabilityMeasure`-valued `Tendsto`).
-
-If a headline statement (or a definition it rests on) changes, comparator fails with
-`Const does not match …` — regenerate the affected challenge from a fresh extraction and re-apply
-the post-processing. When adding a challenge module, add it to the `Comparator` library's `globs`
-in `lakefile.toml` — never as a root, and never as its own library (see *Repository wiring*;
-plain `lake exe mk_all --check` must also stay restricted to `--lib AlphaRAR`, since the glob
-modules have no module directory). To pre-check Palomar's standalone compile locally, run `lean`
-on the challenge with `LEAN_PATH` restricted to the Mathlib-closure packages under
-`.lake/packages` — no LML, no `.lake/build`.
+`scripts/make-challenges.py` regenerates every challenge and config from `targets.txt`;
+`lake build Comparator` checks that they compile; `scripts/comparator-verify.sh [--insecure]`
+runs comparator on every config (see the script header for the sandbox requirements).

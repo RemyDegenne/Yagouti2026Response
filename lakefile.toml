@@ -47,5 +47,5 @@ globs = [
   "Challenge_aRTS_prop_dev",
   "Challenge_aRTS_prop_dev_ae",
   "Challenge_aRTSFE_sparse_clt_of_contDiffAt",
-  "Challenge_aRTSFE_sparse_rate",
+  "Challenge_aRTSFE_sparse_rate_of_isARTSFE",
 ]
