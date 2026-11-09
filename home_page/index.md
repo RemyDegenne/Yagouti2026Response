@@ -12,4 +12,4 @@ Experiments* (Yagouti, Degenne, Kaufmann, 2026,
 * [Dependency graph]({{ site.url }}/blueprint/dep_graph_document.html)
 * [Referee site]({{ site.url }}/referee/)
 * [Literature links]({{ site.url }}/literature/): which declarations formalize which results of the paper
-* [Errata](https://github.com/RemyDegenne/alpha-rar/blob/main/notes/paper-errata.md): errors found in the paper, with their corrections
+* [Errata](https://github.com/RemyDegenne/Yagouti2026Response/blob/main/notes/paper-errata.md): errors found in the paper, with their corrections

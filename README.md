@@ -1,4 +1,4 @@
-# alpha-rar
+# Yagouti2026Response
 
 A Lean 4 formalization of *On Response-Adaptive Targeting Strategies for Multi-Treatment
 Experiments* (Redouane Yagouti, Rémy Degenne and Emilie Kaufmann, 2026,
@@ -17,7 +17,7 @@ logarithm, a martingale central limit theorem, Anscombe's theorem). Two results 
 corrected form, Lemma 4.5 and Corollary 5.3: see the errata. Every headline result is proved, with
 no `sorry`.
 
-- Website: https://RemyDegenne.github.io/alpha-rar/, with the blueprint, the referee site and the
+- Website: https://RemyDegenne.github.io/Yagouti2026Response/, with the blueprint, the referee site and the
   literature links (which declarations formalize which results of the paper). CI builds it on each
   push to `main`. `scripts/formalize.sh` also commits the literature links, as
   `literature/annotations.jsonl`, when the paper is formalized and after the final bump.

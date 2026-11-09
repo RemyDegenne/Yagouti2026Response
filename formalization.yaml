@@ -11,7 +11,7 @@
 version: "v0.4"
 
 project:
-  name: "alpha-rar"
+  name: "Yagouti2026Response"
   description: >-
     A Lean 4 / Mathlib formalization of the two main theorems of "On Response-Adaptive Targeting
     Strategies for Multi-Treatment Experiments" (Yagouti, Degenne, Kaufmann, arXiv:2606.17777):
@@ -31,9 +31,9 @@ project:
     - "Rémy Degenne"
   license: "Apache-2.0"
   # extra keys (tolerated by the schema), kept for convenience:
-  repository: "https://github.com/RemyDegenne/alpha-rar"
+  repository: "https://github.com/RemyDegenne/Yagouti2026Response"
   # Auxiliary working document, not a source; see `alignment.note`.
-  blueprint: "https://remydegenne.github.io/alpha-rar/blueprint/"
+  blueprint: "https://remydegenne.github.io/Yagouti2026Response/blueprint/"
 
 # This repository is the substantive formalization, not a packaging or comparison layer.
 repository:
