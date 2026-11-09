@@ -43,7 +43,7 @@ Theorem 4.1's three conclusions are `aRTS_proportion_tendsto`, `aRTS_theta_rate`
 ### 1. Corollary 5.3 carries two hypotheses beyond the documented `(⋆)`
 
 `fidelity.divergences` item 2 describes only the schedule swap `h = o(√n)` → `(⋆)`.
-`aRTSFE_sparse_clt_of_contDiffAt` (`AlphaRAR/YDK2026/ForcedExploration.lean`) additionally assumes
+`aRTSFE_sparse_clt_of_contDiffAt` (`AlphaRAR/YDK2026/ForcedExplorationSparse.lean`) additionally assumes
 
 * `hshift` — schedule regularity `h(n − (K⌈h(n)⌉+1)) / h(n) → 1`;
 * `hT2` — `T` is `C²` at `Θ` on the sparse coordinates (`T ν.means a = 0 → ContDiffAt ℝ 2 (T · a)`).

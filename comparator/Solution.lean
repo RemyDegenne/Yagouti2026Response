@@ -8,6 +8,7 @@ import AlphaRAR.YDK2026.ARTSNormality
 import AlphaRAR.YDK2026.PropDevARTS
 import AlphaRAR.YDK2026.PropDevLIL
 import AlphaRAR.YDK2026.ForcedExploration
+import AlphaRAR.YDK2026.ForcedExplorationSparse
 
 /-! # Comparator solution module
 

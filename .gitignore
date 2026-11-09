@@ -35,3 +35,7 @@
 *.synctex.gz
 *.synctex.gz(busy)
 *.pdfsync
+
+## lml
+/.lml-paper-template/
+/.tauceti/

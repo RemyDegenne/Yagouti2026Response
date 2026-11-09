@@ -1,15 +1,15 @@
 ---
-# Feel free to add content and custom Front Matter to this file.
-# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
-
-# layout: home
 usemathjax: true
 ---
 
-Useful links:
+Lean 4 formalization of the paper *On Response-Adaptive Targeting Strategies for Multi-Treatment
+Experiments* (Yagouti, Degenne, Kaufmann, 2026,
+[arXiv:2606.17777](https://arxiv.org/abs/2606.17777)), on top of
+[LMLExplore](https://github.com/LeanMachineLearning/LMLExplore).
 
-* [Zulip chat for Lean](https://leanprover.zulipchat.com/) for coordination
 * [Blueprint]({{ site.url }}/blueprint/)
 * [Blueprint as pdf]({{ site.url }}/blueprint.pdf)
 * [Dependency graph]({{ site.url }}/blueprint/dep_graph_document.html)
-* [Doc pages for this repository]({{ site.url }}/docs/)
+* [Referee site]({{ site.url }}/referee/)
+* [Literature links]({{ site.url }}/literature/): which declarations formalize which results of the paper
+* [Errata](https://github.com/RemyDegenne/alpha-rar/blob/main/notes/paper-errata.md): errors found in the paper, with their corrections

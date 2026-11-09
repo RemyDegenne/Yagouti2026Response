@@ -45,7 +45,7 @@ sources:
       - "Redouane Yagouti"
       - "Rémy Degenne"
       - "Emilie Kaufmann"
-    id: "arXiv:2606.17777"
+    id: "arXiv:2606.17777v1"
     type: "preprint"
     location: >-
       Sections 2–5 and Appendices A–C, i.e. the whole theory. Out of scope: the simulation study
@@ -59,7 +59,8 @@ sources:
       statement numbers used in this file (Theorem 4.1, Lemma 4.5, Corollary 5.3, ...) are the
       numbers of that source as compiled. The formalization is organized by an auxiliary
       blueprint (`blueprint/src/`) written by Claude Opus (4.8 first, then 5) alongside the Lean,
-      which decomposes the paper's proofs into small lemmas.
+      which decomposes the paper's proofs into small lemmas. The errors found in the paper, with
+      their corrections, are in `notes/paper-errata.md`.
 
 related_formalizations: []   # no earlier or parallel formalization of this paper is known
 
@@ -165,7 +166,7 @@ status:
       comparator_config: "comparator/aRTS_prop_dev_ae.json"
       literature_dependencies: []
     - declaration: "AlphaRAR.aRTSFE_sparse_clt_of_contDiffAt"
-      file: "AlphaRAR/YDK2026/ForcedExploration.lean"
+      file: "AlphaRAR/YDK2026/ForcedExplorationSparse.lean"
       source_statement: "Corollary 5.3 — componentwise CLT for αRTS-FE under a sparse target"
       note: >-
         Proved under a *modified* condition (ii) of Definition 5.1; see `fidelity.divergences`.
@@ -177,7 +178,7 @@ status:
       comparator_config: "comparator/aRTSFE_sparse_clt_of_contDiffAt.json"
       literature_dependencies: []
     - declaration: "AlphaRAR.aRTSFE_sparse_rate_of_isARTSFE"
-      file: "AlphaRAR/YDK2026/ForcedExploration.lean"
+      file: "AlphaRAR/YDK2026/ForcedExplorationSparse.lean"
       source_statement: "Theorem 5.2 — consistency and rate for sparse targets"
       note: >-
         Stated from the history-level design predicate `IsARTSFE`, like every other result of
@@ -359,11 +360,13 @@ alignment:
       lean: "AlphaRAR.estimatorError_joint_tendsto_multivariateGaussian"
       module: "AlphaRAR.YDK2026.ResponseCLTJoint"
       status: "proved"
+      erratum: "E1"
       note: "Statement strengthened by a regularity hypothesis; see fidelity.divergences item 1."
     - source: "Definition 5.1 — the αRTS-FE family"
       lean: "AlphaRAR.IsARTSFE, AlphaRAR.IsExplorationSchedule"
       module: "AlphaRAR.YDK2026.ForcedExploration"
       status: "proved"
+      erratum: "E2"
       note: "Condition (ii) on the schedule h is modified; see fidelity.divergences item 2."
     - source: "Theorem 5.1 — validity under forced exploration"
       lean: >-
@@ -374,15 +377,16 @@ alignment:
       note: "The conclusions of Theorems 4.1 and 4.2 transported to αRTS-FE, one declaration each."
     - source: "Theorem 5.2 — consistency and rate for sparse targets"
       lean: "AlphaRAR.aRTSFE_sparse_rate_of_isARTSFE"
-      module: "AlphaRAR.YDK2026.ForcedExploration"
+      module: "AlphaRAR.YDK2026.ForcedExplorationSparse"
       status: "proved"
       note: >-
         Its first conclusion, N_{n,k} → ∞ a.s. (no starvation, proved in Appendix B.2), is
-        `AlphaRAR.aRTSFE_no_starvation` in the same module.
+        `AlphaRAR.aRTSFE_no_starvation` in AlphaRAR.YDK2026.ForcedExploration.
     - source: "Corollary 5.3 — componentwise CLT for αRTS-FE"
       lean: "AlphaRAR.aRTSFE_sparse_clt_of_contDiffAt"
-      module: "AlphaRAR.YDK2026.ForcedExploration"
+      module: "AlphaRAR.YDK2026.ForcedExplorationSparse"
       status: "proved"
+      erratum: "E2"
       note: "Under the modified schedule condition (⋆); see fidelity.divergences item 2."
     - source: "Lemma 6.1 — Pearson statistic and its asymptotic null distribution (Appendix B.3)"
       lean: "AlphaRAR.isProjection_one_sub_vecMulVec"
