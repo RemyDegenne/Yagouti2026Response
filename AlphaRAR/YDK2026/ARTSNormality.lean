@@ -169,8 +169,8 @@ lemma clt_joint_of_hitting [Fintype 𝓐] [DecidableEq 𝓐]
   exact clt_joint (v := T ν.means)
     h θ₀ hνk hv hNconv hT G hTderiv hcons hprop
 
-/-- **Joint central limit theorem for the aRTS design**, equation (9) of Theorem 4.2 (ii) of the
-paper, fully self-contained. From the `aRTS` design bundle — an `IsAlgEnvSeq` sequence, Condition
+/-- **Joint central limit theorem for the aRTS design** [YDK26, Theorem 4.2 (ii), (9)], fully
+self-contained. From the `aRTS` design bundle — an `IsAlgEnvSeq` sequence, Condition
 **A** (the kernel `L²` bound `hνk`), a simplex-valued target `T` that is `LipschitzWith K`
 (Condition **B**), the algorithm-level predicate `IsARTS`, `α ∈ [0,1)`, the non-sparsity `hTpos`,
 and the first-order differentiability of `T` at `θ` with Jacobian `G` (`hTderiv`) — the `√n`-scaled

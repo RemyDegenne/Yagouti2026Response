@@ -689,8 +689,8 @@ lemma prop_dev_of_hitting [Fintype 𝓐] [DecidableEq 𝓐]
   · -- hWρ
     exact hWρ
 
-/-- **Deviation between proportions and plug-in target for the aRTS design** (equation (5) of
-Theorem 4.2 (i) of the paper). For every arm `k`, `|N_{n,k} - n ρ̂_{n,k}| = o_p(√n)`.
+/-- **Deviation between proportions and plug-in target for the aRTS design**
+[YDK26, Theorem 4.2 (i), (5)]. For every arm `k`, `|N_{n,k} - n ρ̂_{n,k}| = o_p(√n)`.
 
 The `aRTS` instantiation of `prop_dev_of_hitting` at the last under-sampling time
 `hitting (aRTSUnder …)`, fully self-contained: the consistencies `θ̂ → θ`

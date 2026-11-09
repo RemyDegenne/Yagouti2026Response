@@ -563,7 +563,7 @@ lemma abs_estimator_sub_le_rate_loglog_N [DecidableEq 𝓐]
     rw [mul_assoc]; exact mul_le_mul_of_nonneg_left hprodge hann
   nlinarith [h1, h2]
 
-/-- **Consistency and rate for sparse targets** (Theorem 5.2 of the paper). Under Condition **A**
+/-- **Consistency and rate for sparse targets** [YDK26, Theorem 5.2]. Under Condition **A**
 only (no non-sparsity), any forced-exploration design satisfies, for every arm `k`, almost surely:
 `N_{n,k} → ∞`; `N_{n,k}/n → v_k = T(θ)_k` (allowing `v_k = 0`); and
 `|θ̂_{n,k} - θ_k| = O(√(log log N_{n,k} / N_{n,k}))` (the estimator LIL scaled by the arm's *own*
@@ -991,9 +991,11 @@ lemma fEfed_of_decay [Finite 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] 
       ≤ count (fun i ↦ throttledIndicator A Y θ₀ T hsched k i ω) (m + 1)
     rw [count_succ, hval]
 
-/-- **The sparse componentwise CLT for `aRTSFE`, with the `FEfed` hypothesis discharged.** This is
-the capstone of `maths/sparse-clt-fix.md`: `aRTSFE_sparse_clt` assumes that each sparse arm is
-eventually fed only by forced exploration; here that assumption is *proved*, from
+/-- **The sparse componentwise CLT for `aRTSFE`, with the `FEfed` hypothesis discharged**
+[YDK26, Corollary 5.3], under a corrected schedule condition (erratum E2 of
+`notes/paper-errata.md`). This is the capstone of `maths/sparse-clt-fix.md`: `aRTSFE_sparse_clt`
+assumes that each sparse arm is eventually fed only by forced exploration; here that assumption is
+*proved*, from
 
 * `hstar` — the reversed schedule condition `(⋆) : m log log m = o(h(m)²)`, which replaces the
   paper's `h(m) = o(√m)` and is satisfiable exactly where the paper's condition fails

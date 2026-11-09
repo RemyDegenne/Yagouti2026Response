@@ -424,7 +424,7 @@ lemma prop_dev_ae_of_hitting [Fintype 𝓐] [DecidableEq 𝓐]
     (by simp only [aRTSTarget]; exact hTsum _) n
 
 /-- **A.s. loglog deviation between proportions and plug-in target for the aRTS design**
-(Theorem 4.2 (i) of the paper, equation (6)). For every arm `k`, almost surely
+[YDK26, Theorem 4.2 (i), (6)]. For every arm `k`, almost surely
 `N_{n,k} - n ρ̂_{n,k} = O(√(n log log n))`.
 
 The `aRTS` instantiation of `prop_dev_ae_of_hitting`: the estimator consistency and loglog rate
@@ -487,7 +487,7 @@ lemma count_sub_smul_ae_of_hitting [Fintype 𝓐] [DecidableEq 𝓐]
   simp only [aRTSTarget]; ring
 
 /-- **A.s. loglog deviation between the count and the target proportion for the aRTS design**
-(Theorem 4.2 (i) of the paper, equation (7)). For every arm `k`, almost surely
+[YDK26, Theorem 4.2 (i), (7)]. For every arm `k`, almost surely
 `N_{n,k} - n v_k = O(√(n log log n))`, where `v_k = T ν.means k` is the limiting proportion.
 The `aRTS` instantiation of `count_sub_smul_ae_of_hitting`. -/
 theorem aRTS_count_sub_smul_ae [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]

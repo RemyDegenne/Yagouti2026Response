@@ -145,8 +145,8 @@ lemma rho_rate_of_hitting (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (theta_consistent_of_hitting h hνk θ₀ T hT hTnn hTsum α hα Q hthrottle hgs hTpos)
     (fun k' ↦ theta_rate_of_hitting h hνk hT hTnn hTsum hα Q hthrottle hgs hTpos k') k
 
-/-- **Loglog rate of the estimator for an aRTS design** (the second conclusion of Theorem 4.1 of
-the paper). The `aRTS` instantiation of `theta_rate_of_hitting`:
+/-- **Loglog rate of the estimator for an aRTS design** [YDK26, Theorem 4.1], its second
+conclusion. The `aRTS` instantiation of `theta_rate_of_hitting`:
 `θ̂_{n,k} - θ_k = O(√(log log n / n))` a.s. -/
 theorem aRTS_theta_rate (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) {θ₀ : 𝓐 → ℝ} {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T)
@@ -160,8 +160,8 @@ theorem aRTS_theta_rate (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (aRTS_smallness_all θ₀ T)
     hTpos k
 
-/-- **Loglog rate of the plug-in target for an aRTS design** (the third conclusion of Theorem 4.1
-of the paper). The `aRTS` instantiation of `rho_rate_of_hitting`:
+/-- **Loglog rate of the plug-in target for an aRTS design** [YDK26, Theorem 4.1], its third
+conclusion. The `aRTS` instantiation of `rho_rate_of_hitting`:
 `ρ̂_{n,k} - v_k = O(√(log log n / n))` a.s. -/
 theorem aRTS_rho_rate (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) {θ₀ : 𝓐 → ℝ} {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T)
@@ -177,7 +177,7 @@ theorem aRTS_rho_rate (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (aRTS_smallness_all θ₀ T)
     hTpos hT_diff k
 
-/-- **Strong consistency and rates for an aRTS design** (Theorem 4.1 of the paper). Under
+/-- **Strong consistency and rates for an aRTS design** [YDK26, Theorem 4.1]. Under
 Conditions **A** (`hνk`) and **B** (`hT`, `hTpos`, `hT_diff`, and the simplex conditions `hTnn`,
 `hTsum`) an `α`-throttled aRTS design satisfies, almost surely for every arm `k`:
 the allocation proportion converges to the target `N_{n,k}/n → v_k = T(θ)_k`; the estimator is

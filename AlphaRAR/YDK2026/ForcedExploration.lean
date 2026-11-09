@@ -980,8 +980,8 @@ lemma fe_of_isARTSFE [Finite 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] 
     obtain ⟨j, hj1, hj2⟩ := h2
     exact Or.inr ⟨j, hj1, by exact_mod_cast hj2⟩
 
-/-- **A.s. consistency of the `aRTSFE` allocation proportions** (Theorem 5.1 of the paper,
-consistency direction). For a forced-exploration design — given here by the history-level design
+/-- **A.s. consistency of the `aRTSFE` allocation proportions** [YDK26, Theorem 5.1], consistency
+direction. For a forced-exploration design — given here by the history-level design
 predicate `IsARTSFE`, whose throttle is transported to the process by `throttle_of_isARTSFE` —
 with an exploration schedule `hsched`, the allocation proportions converge a.s. to the common
 limit of the plug-in targets: `N_{n,k}/n → v_k` and `ρ̂_{n,k} → v_k` for every arm `k`.
@@ -1020,8 +1020,8 @@ Like the `aRTS` results, these state their design hypothesis as the history-leve
 than as a process-level throttle, so they mention only the design, the environment and the
 schedule. That is why this section sits after `throttle_of_isARTSFE`. -/
 
-/-- **`o_p(√n)` proportion deviation under forced exploration** (Theorem 5.1 of the paper, carrying
-equation (5) of Theorem 4.2 (i)). `|N_{n,k} - n ρ̂_{n,k}| = o_p(√n)` for the `aRTSFE` family.
+/-- **`o_p(√n)` proportion deviation under forced exploration** [YDK26, Theorem 5.1], carrying
+equation (5) of Theorem 4.2 (i). `|N_{n,k} - n ρ̂_{n,k}| = o_p(√n)` for the `aRTSFE` family.
 A direct reuse of `prop_dev_of_hitting`; the `o_p`-smallness is `aRTSFE_smallness_op`, whose
 Condition **B** input (`hv`, `hNconv`) is the consistency this theorem already establishes. -/
 @[specifies IsExplorationSchedule "the three retained fields are enough for the `√n`-scaled \
@@ -1050,11 +1050,12 @@ theorem aRTSFE_prop_dev [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace �
     (aRTSFEUnder A Y θ₀ T hsched) (fun k m ↦ measurableSet_aRTSFEUnder h θ₀ hT hsched k m)
     hthrottle (fun k' ↦ aRTSFE_smallness_op h θ₀ hT hh k' (hv k') (hNconv k')) k
 
-/-- **A.s. `O(√(n log log n))` proportion deviation under forced exploration** (Theorem 5.1 of the
-paper, carrying equation (6) of Theorem 4.2 (i)). `N_{n,k} - n ρ̂_{n,k} = O(√(n log log n))`
-a.s. for the `aRTSFE` family. A direct reuse of `prop_dev_ae_of_hitting`; the loglog rate is
-`rho_rate_of_hitting` and the smallness is `aRTSFE_smallness_upper`, whose Condition **B** input
-is the consistency this theorem already establishes. -/
+/-- **A.s. `O(√(n log log n))` proportion deviation under forced exploration**
+[YDK26, Theorem 5.1], carrying equation (6) of Theorem 4.2 (i).
+`N_{n,k} - n ρ̂_{n,k} = O(√(n log log n))` a.s. for the `aRTSFE` family. A direct reuse of
+`prop_dev_ae_of_hitting`; the loglog rate is `rho_rate_of_hitting` and the smallness is
+`aRTSFE_smallness_upper`, whose Condition **B** input is the consistency this theorem already
+establishes. -/
 theorem aRTSFE_prop_dev_ae [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
     (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (hνk : ∀ a, MemLp id 2 (ν a))
     (θ₀ : 𝓐 → ℝ) (T : (𝓐 → ℝ) → 𝓐 → ℝ) (hT : Continuous T)
@@ -1080,7 +1081,7 @@ theorem aRTSFE_prop_dev_ae [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace
     (fun k' ↦ aRTSFE_smallness_upper θ₀ T hh k' (hv k') (hNconv k')) k
 
 /-- **A.s. `O(√(n log log n))` count-versus-target deviation under forced exploration**
-(Theorem 5.1 of the paper, carrying equation (7) of Theorem 4.2 (i)).
+[YDK26, Theorem 5.1], carrying equation (7) of Theorem 4.2 (i).
 `N_{n,k} - n v_k = O(√(n log log n))` a.s. for the `aRTSFE` family. A direct reuse of
 `count_sub_smul_ae_of_hitting`. -/
 theorem aRTSFE_count_sub_smul_ae [Fintype 𝓐] [DecidableEq 𝓐] [StandardBorelSpace 𝓐] [Nonempty 𝓐]
@@ -1107,8 +1108,8 @@ theorem aRTSFE_count_sub_smul_ae [Fintype 𝓐] [DecidableEq 𝓐] [StandardBore
       hthrottle hgs hTpos hT_diff k')
     (fun k' ↦ aRTSFE_smallness_upper θ₀ T hh k' (hv k') (hNconv k')) k
 
-/-- **Joint central limit theorem under forced exploration** (Theorem 5.1 of the paper, carrying
-equation (9) of Theorem 4.2 (ii)). The `√n`-scaled joint deviation vector
+/-- **Joint central limit theorem under forced exploration** [YDK26, Theorem 5.1], carrying
+equation (9) of Theorem 4.2 (ii). The `√n`-scaled joint deviation vector
 `(√n(N_n/n - v), √n(ρ̂_n - v))` converges weakly to the block-Gaussian `𝒩(0, Ω)` for the `aRTSFE`
 family. A direct reuse of `clt_joint_of_hitting`; the smallness conditions are
 `aRTSFE_smallness_all` and `aRTSFE_smallness_op`. -/
