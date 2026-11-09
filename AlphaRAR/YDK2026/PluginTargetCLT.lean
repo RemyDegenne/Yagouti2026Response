@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.TendstoInMeasure
+public import AlphaRAR.ForLMLExplore.MeasureTheory.Function.TendstoInMeasure
 public import AlphaRAR.YDK2026.ResponseCLTJoint
 public meta import TrustAnnotations
 
@@ -78,8 +78,9 @@ noncomputable def estimatorSqrtNVec (ν : Kernel 𝓐 ℝ) (A : ℕ → Ω → �
   WithLp.toLp 2 (fun k ↦ √n *
     (estimator (fun j ↦ actionIndicator A k j ω) (Y · ω) (θ₀ k) n - ν.means k))
 
-omit [DecidableEq 𝓐] [Fintype 𝓐] in
-lemma measurable_estimatorSqrtNVec' (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ)
+omit [DecidableEq 𝓐] [Fintype 𝓐] [IsProbabilityMeasure P] in
+lemma measurable_estimatorSqrtNVec' (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
+    (θ₀ : 𝓐 → ℝ)
     (n : ℕ) : Measurable (estimatorSqrtNVec ν A Y θ₀ n) := by
   refine (WithLp.measurable_toLp 2 (𝓐 → ℝ)).comp (Measurable.of_eval fun k ↦ ?_)
   refine Measurable.const_mul ?_ (√n)
@@ -99,7 +100,7 @@ matches definitionally. -/
 the arm-`k` variance inflated by `1/v_k` because arm `k` is only pulled a fraction `v_k` of the \
 time"]
 lemma estimatorSqrtNVec_joint_tendsto_multivariateGaussian
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ)
     (hνk : ∀ a, MemLp id 2 (ν a)) {v : 𝓐 → ℝ} (hv : ∀ a, 0 < v a)
     (hNconv : ∀ᵐ ω ∂P, ∀ a, Tendsto (fun n ↦ count (fun j ↦ actionIndicator A a j ω) n / (n : ℝ))
       atTop (𝓝 (v a))) :
@@ -107,9 +108,10 @@ lemma estimatorSqrtNVec_joint_tendsto_multivariateGaussian
       (multivariateGaussian 0 (Matrix.diagonal fun a ↦ Var[id; ν a] / v a)) :=
   estimator_sqrtN_joint_tendsto_multivariateGaussian h θ₀ hνk hv hNconv
 
-omit [DecidableEq 𝓐] [Fintype 𝓐] in
+omit [DecidableEq 𝓐] [Fintype 𝓐] [IsProbabilityMeasure P] in
 /-- Measurability of the estimator vector `ω ↦ (θ̂_{n,k}(ω))_k : 𝓐 → ℝ`. -/
-lemma measurable_estimatorVec (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ) (n : ℕ) :
+lemma measurable_estimatorVec (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ)
+    (n : ℕ) :
     Measurable (fun ω ↦ (fun k ↦ estimator (fun j ↦ actionIndicator A k j ω)
       (Y · ω) (θ₀ k) n : 𝓐 → ℝ)) := by
   refine Measurable.of_eval fun k ↦ ?_
@@ -120,8 +122,8 @@ lemma measurable_estimatorVec (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (
   exact ((Finset.measurable_sum _ fun j _ ↦ (harm j).mul (h.measurable_feedback j)).add_const
     (θ₀ k)).div ((measurable_count_actionIndicator h k n).add_const 1)
 
-omit [DecidableEq 𝓐] [Fintype 𝓐] in
-lemma measurable_targetSqrtNVec [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+omit [DecidableEq 𝓐] [Fintype 𝓐] [IsProbabilityMeasure P] in
+lemma measurable_targetSqrtNVec [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (θ₀ : 𝓐 → ℝ) {T : (𝓐 → ℝ) → 𝓐 → ℝ} (hT : Continuous T) (n : ℕ) :
     Measurable (targetSqrtNVec ν A Y θ₀ T n) := by
   cases nonempty_fintype 𝓐
@@ -139,7 +141,7 @@ plug-in target satisfies `√n(T(θ̂_n) - T(θ)) ⇒ 𝒩(0, G · diag(V_k/v_k)
 the linear pushforward of the estimator's Gaussian (`multivariateGaussian_map_matrix`), obtained via
 the product-space Slutsky lemma with `g(x, r) = G·x + r`. -/
 lemma clt_rho_of_tendstoInMeasure
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ)
     (hνk : ∀ a, MemLp id 2 (ν a)) {v : 𝓐 → ℝ} (hv : ∀ a, 0 < v a)
     (hNconv : ∀ᵐ ω ∂P, ∀ a, Tendsto (fun n ↦ count (fun j ↦ actionIndicator A a j ω) n / (n : ℝ))
       atTop (𝓝 (v a)))
@@ -206,7 +208,7 @@ and whose `Sₙ → 0` input is the a.s. consistency. -/
 the estimator error (no extra rate is introduced by `T`) and the centring at `T(θ)` rather than at \
 any running quantity, which is what makes the limit the delta-method Gaussian `G Σ Gᵀ`"]
 lemma clt_rho
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ)
     (hνk : ∀ a, MemLp id 2 (ν a)) {v : 𝓐 → ℝ} (hv : ∀ a, 0 < v a)
     (hNconv : ∀ᵐ ω ∂P, ∀ a, Tendsto (fun n ↦ count (fun j ↦ actionIndicator A a j ω) n / (n : ℝ))
       atTop (𝓝 (v a)))

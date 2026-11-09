@@ -7,10 +7,16 @@ pp.unicode.fun = true
 autoImplicit = false
 relaxedAutoImplicit = false
 weak.linter.mathlibStandardSet = true
+# LMLExplore's settings, which ForLMLExplore/ must meet. The two long-file options must agree, or
+# the linter asks for a `set_option` in every short file.
+weak.linter.style.header = true
+weak.linter.style.longFile = 1500
+weak.linter.style.longFileDefValue = 1500
 
+# LMLExplore brings Mathlib, Tau Ceti and LML at the versions it pins: never require them here.
 [[require]]
-name = "LeanMachineLearning"
-git = "https://github.com/LeanMachineLearning/LML"
+name = "LMLExplore"
+git = "https://github.com/LeanMachineLearning/LMLExplore"
 rev = "main"
 
 [[require]]
@@ -20,7 +26,7 @@ git = "https://github.com/PatrickMassot/checkdecls.git"
 [[require]]
 name = "TrustAnnotations"
 git = "https://github.com/LeanTrustBuilders/annotations"
-rev = "lean-v4.34.0-rc2"
+rev = "v4.36.0-rc2"
 
 [[lean_lib]]
 name = "AlphaRAR"
@@ -32,7 +38,7 @@ name = "AlphaRAR"
 [[lean_lib]]
 name = "Comparator"
 srcDir = "comparator"
-leanOptions = { weak.linter.mathlibStandardSet = false }
+leanOptions = { weak.linter.mathlibStandardSet = false, weak.linter.style.header = false }
 globs = [
   "Comparator",
   "Solution",
@@ -41,5 +47,5 @@ globs = [
   "Challenge_aRTS_prop_dev",
   "Challenge_aRTS_prop_dev_ae",
   "Challenge_aRTSFE_sparse_clt_of_contDiffAt",
-  "Challenge_aRTSFE_sparse_rate",
+  "Challenge_aRTSFE_sparse_rate_of_isARTSFE",
 ]

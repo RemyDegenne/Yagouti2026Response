@@ -54,7 +54,7 @@ noncomputable def probVecKernel (p : X → 𝓐 → ℝ) (hp : ∀ a, Measurable
   toFun x := ∑ a, ENNReal.ofReal (p x a) • Measure.dirac a
   measurable' := by
     refine Measure.measurable_of_measurable_coe _ fun s hs ↦ ?_
-    simp only [Measure.finsetSum_apply, Measure.smul_apply, smul_eq_mul]
+    simp only [_root_.sum_apply, _root_.smul_apply, smul_eq_mul]
     exact Finset.measurable_sum _ fun a _ ↦ (hp a).ennreal_ofReal.mul_const _
 
 omit [MeasurableSingletonClass 𝓐] in
@@ -66,13 +66,13 @@ lemma probVecKernel_apply (p : X → 𝓐 → ℝ) (hp : ∀ a, Measurable fun x
 that arm's coordinate, with the `ℝ≥0∞` round-trip doing nothing on nonnegative inputs"]
 lemma probVecKernel_apply_singleton (p : X → 𝓐 → ℝ) (hp : ∀ a, Measurable fun x ↦ p x a) (x : X)
     (k : 𝓐) (hnn : 0 ≤ p x k) : (probVecKernel p hp x {k}).toReal = p x k := by
-  rw [probVecKernel_apply, Measure.finsetSum_apply]
+  rw [probVecKernel_apply, _root_.sum_apply]
   have hzero : ∀ a ∈ (univ : Finset 𝓐), a ≠ k →
       (ENNReal.ofReal (p x a) • Measure.dirac a) {k} = 0 := by
     intro a _ hak
-    rw [Measure.smul_apply, smul_eq_mul, Measure.dirac_apply' _ (measurableSet_singleton k),
+    rw [_root_.smul_apply, smul_eq_mul, Measure.dirac_apply' _ (measurableSet_singleton k),
       Set.indicator_of_notMem (by simpa using hak), mul_zero]
-  rw [Finset.sum_eq_single_of_mem k (mem_univ k) hzero, Measure.smul_apply, smul_eq_mul,
+  rw [Finset.sum_eq_single_of_mem k (mem_univ k) hzero, _root_.smul_apply, smul_eq_mul,
     Measure.dirac_apply' k (measurableSet_singleton k),
     Set.indicator_of_mem (Set.mem_singleton_iff.mpr rfl), Pi.one_apply, mul_one,
     ENNReal.toReal_ofReal hnn]
@@ -86,8 +86,8 @@ lemma probVecKernel.isMarkovKernel (p : X → 𝓐 → ℝ) (hp : ∀ a, Measura
     (hnn : ∀ x a, 0 ≤ p x a) (hsum : ∀ x, ∑ a, p x a = 1) :
     IsMarkovKernel (probVecKernel p hp) := by
   refine ⟨fun x ↦ ⟨?_⟩⟩
-  rw [probVecKernel_apply, Measure.finsetSum_apply]
-  simp only [Measure.smul_apply, smul_eq_mul, MeasureTheory.measure_univ, mul_one]
+  rw [probVecKernel_apply, _root_.sum_apply]
+  simp only [_root_.smul_apply, smul_eq_mul, MeasureTheory.measure_univ, mul_one]
   rw [← ENNReal.ofReal_sum_of_nonneg fun a _ ↦ hnn x a, hsum x, ENNReal.ofReal_one]
 
 end ProbVecKernel
@@ -516,7 +516,7 @@ lemma dTrackingProb_throttle (θ₀ : 𝓐 → ℝ) {T : (𝓐 → ℝ) → 𝓐
       by_contra hcon
       push Not at hcon
       exact absurd hdsum (Finset.sum_neg (fun i _ ↦ hcon i) univ_nonempty).ne
-    exact le_trans hj (isMaxOn_argmax d j)
+    exact le_trans hj (isMaxOn_argmax d (Set.mem_univ j))
   have hne : k ≠ _root_.argmax d := fun heq ↦ absurd (heq ▸ hk_neg) (not_lt.mpr hMnn)
   refine le_of_eq ?_
   simp only [dTrackingProb, ← hddef, ite_eq_right hne, mul_zero, add_zero]

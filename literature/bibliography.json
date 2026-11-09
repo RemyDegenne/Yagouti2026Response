@@ -1,0 +1,35 @@
+{
+  "YDK26": {
+    "uri": "https://arxiv.org/abs/2606.17777",
+    "identifiers": {
+      "arxiv": "2606.17777"
+    },
+    "citation": {
+      "id": "YDK26",
+      "type": "article",
+      "title": "On Response-Adaptive Targeting Strategies for Multi-Treatment Experiments",
+      "author": [
+        {
+          "family": "Yagouti",
+          "given": "Redouane"
+        },
+        {
+          "family": "Degenne",
+          "given": "Rémy"
+        },
+        {
+          "family": "Kaufmann",
+          "given": "Emilie"
+        }
+      ],
+      "issued": {
+        "date-parts": [
+          [
+            2026
+          ]
+        ]
+      }
+    },
+    "version": "v1"
+  }
+}

@@ -1,6 +1,13 @@
 {
     "challenge_module": "Challenge_aRTS_clt_joint",
     "solution_module": "Solution",
-    "theorem_names": ["AlphaRAR.aRTS_clt_joint"],
-    "permitted_axioms": ["propext", "Classical.choice", "Quot.sound"]
+    "theorem_names": [
+        "AlphaRAR.aRTS_clt_joint",
+        "AlphaRAR.propSqrtNVec._proof_1"
+    ],
+    "permitted_axioms": [
+        "propext",
+        "Quot.sound",
+        "Classical.choice"
+    ]
 }

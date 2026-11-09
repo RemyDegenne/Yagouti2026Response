@@ -5,8 +5,8 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.Filtration
-public import AlphaRAR.Mathlib.Process
+public import AlphaRAR.ForLMLExplore.Probability.Process.Filtration
+public import AlphaRAR.ForLMLExplore.Probability.Process.Indistinguishable
 public import AlphaRAR.YDK2026.Deterministic
 public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.Probability.Martingale.Centering

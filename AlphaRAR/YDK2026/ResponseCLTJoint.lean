@@ -7,9 +7,9 @@ module
 
 public import Mathlib.MeasureTheory.Function.SpecialFunctions.Inner
 public import Mathlib.Probability.CramerWold
-public import AlphaRAR.Mathlib.MultivariateGaussianMap
+public import AlphaRAR.ForLMLExplore.Probability.Distributions.Gaussian.MultivariateGaussianMap
 public import AlphaRAR.YDK2026.ResponseCLT
-public import AlphaRAR.Mathlib.Tactic.Tendsto
+public import AlphaRAR.Tactic.Tendsto
 public import Mathlib.Probability.Distributions.Gaussian.Fernique
 public import Mathlib.Probability.Distributions.Gaussian.Multivariate
 public meta import TrustAnnotations
@@ -80,7 +80,7 @@ lemma wIncr_eq_sum (w : 𝓐 → ℝ) (i : ℕ) :
 
 omit [DecidableEq 𝓐] in
 /-- Each weighted increment is in `L²` (finite combination of `L²` per-arm increments). -/
-lemma memLp_wIncr [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma memLp_wIncr [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a))
     (w : 𝓐 → ℝ) (i : ℕ) : MemLp (wIncr ν A Y w i) 2 P := by
   have hY2 : ∀ n, MemLp (Y n) 2 P := fun n ↦ h.memLp_feedback hνk n
@@ -88,17 +88,18 @@ lemma memLp_wIncr [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
   exact memLp_finsetSum' _ fun a _ ↦
     (memLp_respMart_increment a (h.measurable_action i) (hY2 i)).const_mul (w a)
 
-omit [DecidableEq 𝓐] in
+omit [DecidableEq 𝓐] [IsProbabilityMeasure P] in
 /-- Each weighted increment is `𝒢 (i+1)`-strongly-measurable. -/
 @[fun_prop]
-lemma stronglyMeasurable_wIncr (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (w : 𝓐 → ℝ) (i : ℕ) :
+lemma stronglyMeasurable_wIncr (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (w : 𝓐 → ℝ)
+    (i : ℕ) :
     StronglyMeasurable[h.filtrationAction (i + 1)] (wIncr ν A Y w i) :=
   Finset.stronglyMeasurable_fun_sum _ fun a _ ↦
     (stronglyMeasurable_respIncr h a i).const_mul (w a)
 
 omit [DecidableEq 𝓐] in
 /-- The weighted increment is a martingale difference: `E[∑_k w_k Δ_k | 𝒢 i] = 0`. -/
-lemma condExp_wIncr [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma condExp_wIncr [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a))
     (w : 𝓐 → ℝ) (i : ℕ) :
     P[wIncr ν A Y w i | h.filtrationAction i]
@@ -134,7 +135,7 @@ Allowing the weight to depend on the row is what lets a *single* array cover bot
 deterministic normalization `(wn n)_k = w_k/√n` (giving `(∑_k w_k Q_{n,k})/√n`, used for the
 non-sparse joint CLT) and *per-arm* normalizations `(wn n)_k = w_k/√(c_{k,n})` (used for the sparse
 joint CLT, where the arms grow at genuinely different rates). -/
-noncomputable def wArray [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+noncomputable def wArray [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (wn : ℕ → 𝓐 → ℝ) : MartDiffArray P where
   𝓕 := fun _ ↦ h.filtrationAction
   d n i := wIncr ν A Y (wn n) i
@@ -144,18 +145,18 @@ noncomputable def wArray [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv
   adapted n i := stronglyMeasurable_wIncr h (wn n) i
 
 omit [DecidableEq 𝓐] in
-@[simp] lemma wArray_d [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+@[simp] lemma wArray_d [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (wn : ℕ → 𝓐 → ℝ) (n i : ℕ) :
     (wArray h hνk wn).d n i = wIncr ν A Y (wn n) i := rfl
 
 omit [DecidableEq 𝓐] in
-@[simp] lemma wArray_filt [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+@[simp] lemma wArray_filt [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (wn : ℕ → 𝓐 → ℝ) :
     (wArray h hνk wn).𝓕
       = fun _ ↦ h.filtrationAction := rfl
 
 omit [DecidableEq 𝓐] in
-@[simp] lemma wArray_k [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+@[simp] lemma wArray_k [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (wn : ℕ → 𝓐 → ℝ) : (wArray h hνk wn).k = id := rfl
 
 omit [MeasurableSingletonClass 𝓐] [DecidableEq 𝓐] [IsMarkovKernel ν] [IsProbabilityMeasure P] in
@@ -194,7 +195,7 @@ omit [DecidableEq 𝓐] in
 @[specifies wArray "row `n` really carries row `n`'s weights: its row sum is \
 `∑_k (wn n)_k Q_{n,k}`, so a row-dependent weight family gives a *different* statistic per row — \
 which is what per-arm normalizers require"]
-lemma rowSum_wArray [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma rowSum_wArray [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (wn : ℕ → 𝓐 → ℝ) (n : ℕ) :
     (wArray h hνk wn).rowSum n = fun ω ↦ ∑ a, wn n a * respMart ν A Y a n ω := by
   funext ω
@@ -204,7 +205,7 @@ lemma rowSum_wArray [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) 
 omit [DecidableEq 𝓐] in
 /-- **Conditional square of the weighted increment**:
 `E[(∑_k w_k Δ_k)² | 𝒢 i] = ∑_k w_k² 𝟙{A i=k} V_k` (diagonal collapse + per-arm second moment). -/
-lemma condExp_sq_wIncr [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma condExp_sq_wIncr [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a))
     (w : 𝓐 → ℝ) (i : ℕ) :
     P[fun ω ↦ (wIncr ν A Y w i ω) ^ 2
@@ -241,7 +242,7 @@ omit [DecidableEq 𝓐] in
 @[specifies wArray "the variance is purely diagonal — no cross terms `w_a w_b` survive — and each \
 arm accumulates on its own count `N_{n,k}`. This is the limit computation the joint CLT turns into \
 a diagonal covariance matrix"]
-lemma predVar_wArray_ae [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma predVar_wArray_ae [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (wn : ℕ → 𝓐 → ℝ) (n : ℕ) :
     (wArray h hνk wn).predVar n =ᵐ[P]
       fun ω ↦ ∑ a, wn n a ^ 2 * Var[id; ν a] * count (fun j ↦ actionIndicator A a j ω) n := by
@@ -261,7 +262,7 @@ lemma predVar_wArray_ae [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv 
 omit [DecidableEq 𝓐] in
 /-- The scaled row weights `(wn n)_k = w_k/√(c_{k,n})` turn the predictable variation into
 `∑_k w_k² V_k (N_{n,k}/c_{k,n})`. -/
-lemma predVar_wArray_scaled_ae [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma predVar_wArray_scaled_ae [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (w : 𝓐 → ℝ) {c : 𝓐 → ℕ → ℝ} (hc : ∀ a n, 0 ≤ c a n) (n : ℕ) :
     (wArray h hνk (fun n a ↦ w a / √(c a n))).predVar n =ᵐ[P]
       fun ω ↦ ∑ a, w a ^ 2 * Var[id; ν a]
@@ -279,7 +280,8 @@ scaled weights `(wn n)_k = w_k/√(c_{k,n})` under the regularity `N_{n,k}/c_{k,
 Taking `c_{k,n} = n` and `ρ = v` recovers the non-sparse statement (limit `∑_k w_k² v_k V_k`);
 taking `c_{k,n}` to be per-arm normalizers with `ρ ≡ 1` gives the sparse one
 (limit `∑_k w_k² V_k`). -/
-lemma tendstoInMeasure_predVar_wArray [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma tendstoInMeasure_predVar_wArray [Finite 𝓐]
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (w : 𝓐 → ℝ) {c : 𝓐 → ℕ → ℝ} (hc : ∀ a n, 0 ≤ c a n) {ρ : 𝓐 → ℝ}
     (hNconv : ∀ᵐ ω ∂P, ∀ a, Tendsto (fun n ↦ count (fun j ↦ actionIndicator A a j ω) n / c a n)
       atTop (𝓝 (ρ a))) :
@@ -316,7 +318,7 @@ lemma stronglyMeasurable_lindTrunc (wn : ℕ → 𝓐 → ℝ) (ε : ℝ) (n : �
 omit [MeasurableSingletonClass 𝓐] [Fintype 𝓐] [DecidableEq 𝓐] in
 /-- `x ↦ lindTrunc … (Y i x)` is integrable (bounded by the integrable centered square). -/
 @[fun_prop]
-lemma integrable_lindTrunc_comp [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma integrable_lindTrunc_comp [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (wn : ℕ → 𝓐 → ℝ) (ε : ℝ) (n : ℕ) (a : 𝓐) (i : ℕ) :
     Integrable (fun ω ↦ lindTrunc ν wn ε n a (Y i ω)) P := by
   have hY2 : ∀ n, MemLp (Y n) 2 P := fun n ↦ h.memLp_feedback hνk n
@@ -354,7 +356,7 @@ omit [DecidableEq 𝓐] in
 `h_{n,k}(ε) = ∫ (x-θ_k)² 𝟙{|(wn n)_k||x-θ_k|>ε} dν_k`. Each cell contributes
 `∑_k 𝟙{A i=k}·∫ lindTrunc dν_k` (`condExp_indicator_comp` per arm on the diagonal-collapsed
 square). -/
-lemma lindeberg_wArray_ae [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma lindeberg_wArray_ae [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (wn : ℕ → 𝓐 → ℝ) (ε : ℝ) (n : ℕ) :
     (wArray h hνk wn).lindeberg n ε =ᵐ[P]
       fun ω ↦ ∑ a, wn n a ^ 2
@@ -434,7 +436,8 @@ omit [DecidableEq 𝓐] in
 `L_n(ε) = ∑_k w_k² h_{n,k}(ε) (N_{n,k}/c_{k,n})`, where each truncated moment `h_{n,k}(ε) → 0` by
 dominated convergence (`tendsto_integral_sq_indicator_gt`; the threshold `ε√(c_{k,n})/|w_k| → ∞`)
 while `N_{n,k}/c_{k,n} → ρ_k`, so the product tends to `0` a.s., hence in measure. -/
-lemma tendstoInMeasure_lindeberg_wArray [Finite 𝓐] (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma tendstoInMeasure_lindeberg_wArray [Finite 𝓐]
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) (w : 𝓐 → ℝ)
     {c : 𝓐 → ℕ → ℝ} (hc : ∀ a n, 0 ≤ c a n) (hc_atTop : ∀ a, Tendsto (c a) atTop atTop)
     {ρ : 𝓐 → ℝ}
@@ -509,7 +512,7 @@ Because the arm indicators are disjoint, a linear combination of the per-arm mar
 with a different normalizer for each arm* — is again a single martingale-difference array. This is
 what makes Cramér–Wold available for the sparse joint CLT, where the arms grow at genuinely
 different rates and no common normalizer exists. -/
-lemma wLinComb_scaled_tendsto_gaussianReal (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma wLinComb_scaled_tendsto_gaussianReal (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (w : 𝓐 → ℝ) (hνk : ∀ a, MemLp id 2 (ν a))
     {c : 𝓐 → ℕ → ℝ} (hc : ∀ a n, 0 ≤ c a n) (hc_atTop : ∀ a, Tendsto (c a) atTop atTop)
     {ρ : 𝓐 → ℝ} (hσ2 : 0 ≤ ∑ a, w a ^ 2 * Var[id; ν a] * ρ a)
@@ -529,7 +532,7 @@ omit [DecidableEq 𝓐] in
 /-- **The 1-D CLT for a linear combination of the response martingales** (the Cramér–Wold
 projection ingredient, common normalizer `√n`): `(∑_k w_k Q_{n,k})/√n ⇒ 𝒩(0, ∑_k w_k² v_k V_k)`.
 The `c_{k,n} = n`, `ρ = v` instance of `wLinComb_scaled_tendsto_gaussianReal`. -/
-lemma wLinComb_tendsto_gaussianReal (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+lemma wLinComb_tendsto_gaussianReal (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (w : 𝓐 → ℝ) {v : 𝓐 → ℝ}
     (hνk : ∀ a, MemLp id 2 (ν a)) (hσ2 : 0 ≤ ∑ a, w a ^ 2 * Var[id; ν a] * v a)
     (hNconv : ∀ᵐ ω ∂P, ∀ a, Tendsto (fun n ↦ count (fun j ↦ actionIndicator A a j ω) n / (n : ℝ))
@@ -618,9 +621,10 @@ noncomputable def respVec (ν : Kernel 𝓐 ℝ) [IsMarkovKernel ν] (A : ℕ �
     (c : 𝓐 → ℕ → ℝ) (n : ℕ) (ω : Ω) : EuclideanSpace ℝ 𝓐 :=
   WithLp.toLp 2 (fun a ↦ (√(c a n))⁻¹ * respMart ν A Y a n ω)
 
-omit [Fintype 𝓐] [DecidableEq 𝓐] in
+omit [Fintype 𝓐] [DecidableEq 𝓐] [IsProbabilityMeasure P] in
 @[fun_prop]
-lemma measurable_respVec (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (c : 𝓐 → ℕ → ℝ) (n : ℕ) :
+lemma measurable_respVec (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (c : 𝓐 → ℕ → ℝ)
+    (n : ℕ) :
     Measurable (respVec ν A Y c n) :=
   (WithLp.measurable_toLp 2 (𝓐 → ℝ)).comp
     (Measurable.of_eval fun a ↦ (measurable_respMart h a n).const_mul _)
@@ -650,7 +654,7 @@ Proved by the Cramér–Wold device (`TendstoInDistribution.of_inner`): every sc
 With `c_{k,n} = n`, `ρ = v` this is the non-sparse statement (limit `diag(v_k V_k)`); with per-arm
 `c_{k,n}` and `ρ ≡ 1` it is the sparse one (limit `diag(V_k)`), valid even when some `v_k = 0`. -/
 lemma respMart_joint_tendsto_multivariateGaussian
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) {c : 𝓐 → ℕ → ℝ} (hc : ∀ a n, 0 ≤ c a n)
     (hc_atTop : ∀ a, Tendsto (c a) atTop atTop) {ρ : 𝓐 → ℝ} (hρ : ∀ a, 0 ≤ ρ a)
     (hV : ∀ a, 0 ≤ Var[id; ν a])
@@ -676,11 +680,11 @@ lemma respMart_joint_tendsto_multivariateGaussian
   exact (wLinComb_scaled_tendsto_gaussianReal h t.ofLp hνk hc hc_atTop hs2nn hNconv).congr
     (fun n ↦ Eventually.of_forall fun ω ↦ (inner_respVec c n ω t).symm) EventuallyEq.rfl
 
-omit [Fintype 𝓐] [DecidableEq 𝓐] in
+omit [Fintype 𝓐] [DecidableEq 𝓐] [IsProbabilityMeasure P] in
 /-- The self-normalized joint response-martingale vector `((√N_{n,a})⁻¹ Q_{n,a})_a ∈ ℝ^𝓐` is
 measurable. -/
 @[fun_prop]
-lemma measurable_respSelfNormVec (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (n : ℕ) :
+lemma measurable_respSelfNormVec (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (n : ℕ) :
     Measurable (fun ω ↦ (WithLp.toLp 2 (fun a ↦
       (√(count (fun j ↦ actionIndicator A a j ω) n))⁻¹ * respMart ν A Y a n ω)
         : EuclideanSpace ℝ 𝓐)) :=
@@ -705,7 +709,7 @@ needs `v_k > 0`); taking per-arm `c_{k,n}` with `ρ ≡ 1` gives the **sparse** 
 the limiting proportion `v_k` is `0`. Note that some such regularity is genuinely needed:
 `N_{n,k} → ∞` alone does not suffice for an adaptively chosen index. -/
 lemma respMart_joint_selfNorm_tendsto_multivariateGaussian
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P)
     (hνk : ∀ a, MemLp id 2 (ν a)) {c : 𝓐 → ℕ → ℝ} (hc : ∀ a n, 0 ≤ c a n)
     (hc_atTop : ∀ a, Tendsto (c a) atTop atTop) {v : 𝓐 → ℝ} (hv : ∀ a, 0 < v a)
     (hNconv : ∀ᵐ ω ∂P, ∀ a, Tendsto (fun n ↦ count (fun j ↦ actionIndicator A a j ω) n / c a n)
@@ -775,10 +779,10 @@ lemma respMart_joint_selfNorm_tendsto_multivariateGaussian
         * ((√(count (fun j ↦ actionIndicator A a j ω) n))⁻¹ * respMart ν A Y a n ω)
       by ring, mul_inv_cancel₀ hsn, one_mul]
 
-omit [Fintype 𝓐] [DecidableEq 𝓐] in
+omit [Fintype 𝓐] [DecidableEq 𝓐] [IsProbabilityMeasure P] in
 /-- The estimator-error vector `D_n(θ̂_n-θ)_k = √N_{n,k}(θ̂_{n,k}-θ_k)` is measurable. -/
 @[fun_prop]
-lemma measurable_estimatorErrorVec (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ)
+lemma measurable_estimatorErrorVec (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ)
     (n : ℕ) :
     Measurable (fun ω ↦ (WithLp.toLp 2 (fun k ↦
       √(count (fun j ↦ actionIndicator A k j ω) n)
@@ -813,7 +817,7 @@ Some regularity of this kind is genuinely necessary, and the paper's Lemma 4.5 i
 self-normalized martingale above its typical value by pausing an arm near a level crossing, using
 the law of the iterated logarithm). -/
 lemma estimatorError_joint_tendsto_multivariateGaussian
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ)
     (hνk : ∀ a, MemLp id 2 (ν a)) {cn : 𝓐 → ℕ → ℝ} (hcn : ∀ a n, 0 ≤ cn a n)
     (hcn_atTop : ∀ a, Tendsto (cn a) atTop atTop) {v : 𝓐 → ℝ} (hv : ∀ a, 0 < v a)
     (hNconv : ∀ᵐ ω ∂P, ∀ a, Tendsto (fun n ↦ count (fun j ↦ actionIndicator A a j ω) n / cn a n)
@@ -931,10 +935,10 @@ lemma respMart_eq_zero_of_count_zero (k : 𝓐) (n : ℕ) (ω : Ω)
   refine Finset.sum_eq_zero fun m hm ↦ ?_
   rw [harm m hm, zero_mul]
 
-omit [Fintype 𝓐] [DecidableEq 𝓐] in
+omit [Fintype 𝓐] [DecidableEq 𝓐] [IsProbabilityMeasure P] in
 /-- The `√n`-normalized estimator-error vector `(√n(θ̂_{n,k}-θ_k))_k` is measurable. -/
 @[fun_prop]
-lemma measurable_estimatorSqrtNVec (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ)
+lemma measurable_estimatorSqrtNVec (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ)
     (n : ℕ) :
     Measurable (fun ω ↦ (WithLp.toLp 2 (fun k ↦ √n
       * (estimator (fun j ↦ actionIndicator A k j ω) (Y · ω) (θ₀ k) n - ν.means k))
@@ -958,7 +962,7 @@ deterministic `√n`: coordinate `k` is
 factors tend to `1/√v_k` and `0`, so the diagonal Gaussian rescaling
 (`multivariateGaussian_diagonal_smul_map`) sends `diag(V_k)` to `diag(V_k/v_k)`. -/
 lemma estimator_sqrtN_joint_tendsto_multivariateGaussian
-    (h : IsAlgEnvSeq O A Y alg (stationaryEnv ν) P) (θ₀ : 𝓐 → ℝ)
+    (h : IsAlgEnvSeq O A Y alg (Environment.bandit ν) P) (θ₀ : 𝓐 → ℝ)
     (hνk : ∀ a, MemLp id 2 (ν a)) {v : 𝓐 → ℝ} (hv : ∀ a, 0 < v a)
     (hNconv : ∀ᵐ ω ∂P, ∀ a, Tendsto (fun n ↦ count (fun j ↦ actionIndicator A a j ω) n / (n : ℝ))
       atTop (𝓝 (v a))) :

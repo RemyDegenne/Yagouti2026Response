@@ -264,7 +264,7 @@ Also done:
 
 * **The quadratic bound from $C^2$** — `hquad` is no longer a hypothesis. Three pieces:
 
-  * `exists_eventually_norm_sub_fderiv_le_mul_sq` (in `AlphaRAR/Mathlib/TaylorRemainder.lean`): a
+  * `exists_eventually_norm_sub_fderiv_le_mul_sq` (in `AlphaRAR/ForLMLExplore/Analysis/Calculus/TaylorRemainder.lean`): a
     $C^2$ map has a first-order Taylor remainder $O(\|x-\theta\|^2)$ near $\theta$. **No Hessian is
     named**: being $C^2$ makes $\mathrm{D}f$ a $C^1$ map, hence locally Lipschitz
     (`ContDiffAt.exists_lipschitzOnWith`), which is exactly the input the pre-existing
