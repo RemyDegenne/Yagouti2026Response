@@ -7,7 +7,6 @@ module
 
 public import AlphaRAR.ForLMLExplore.Probability.Process.Indistinguishable
 public import Mathlib.Probability.Martingale.Centering
-public meta import TrustAnnotations
 
 /-!
 # Predictable quadratic variation
@@ -143,8 +142,7 @@ lemma predQuadVar_eq_sum (n : ℕ) :
     predQuadVar M ℱ μ n
       = ∑ i ∈ range n, μ[(fun ω ↦ M (i + 1) ω ^ 2) - fun ω ↦ M i ω ^ 2 | ℱ i] := rfl
 
-@[simp, specifies predQuadVar "fixes the additive constant, which the increment formula \
-`predQuadVar_succ_sub_eq` alone leaves free; the two together give `⟨M⟩ₙ = ∑_{i<n} μ[(ΔMᵢ)²|ℱᵢ]`"]
+@[simp]
 lemma predQuadVar_zero : predQuadVar M ℱ μ 0 = 0 := predictablePart_zero
 
 @[simp]
@@ -184,14 +182,11 @@ lemma stronglyMeasurable_predQuadVar_succ (n : ℕ) :
     StronglyMeasurable[ℱ n] (predQuadVar M ℱ μ (n + 1)) :=
   stronglyAdapted_predictablePart (f := (M · ^ 2)) n
 
-@[specifies predQuadVar "predictability, which is what lets the compensator property pin `⟨M⟩` \
-down: adding a martingale null at `0` would keep `M² - ⟨M⟩` a martingale but break it"]
 lemma isStronglyPredictable_predQuadVar : IsStronglyPredictable ℱ (predQuadVar M ℱ μ) :=
   isPredictable_predictablePart (f := (M · ^ 2))
 
 /-- **`⟨M⟩ n` is integrable**, being a finite sum of conditional expectations. -/
-@[fun_prop, specifies predQuadVar "each `⟨M⟩ₙ` is integrable, so that `⟨M⟩` can sit in a Doob \
-decomposition at all"]
+@[fun_prop]
 lemma integrable_predQuadVar (n : ℕ) : Integrable (predQuadVar M ℱ μ n) μ := by
   rw [predQuadVar_eq_sum]
   exact integrable_finsetSum' _ fun _ _ ↦ integrable_condExp
@@ -202,9 +197,6 @@ lemma integrable_predQuadVar (n : ℕ) : Integrable (predQuadVar M ℱ μ n) μ 
 For a martingale `M`, the increment of `⟨M⟩` is the conditional second moment of
 the increment of `M`: `⟨M⟩ (n+1) - ⟨M⟩ n = μ[(M (n+1) - M n)² | ℱ n]` a.e.
 (the cross term `2 Mₙ ΔMₙ` vanishes by the martingale property). -/
-@[specifies predQuadVar "the textbook increment formula `Δ⟨M⟩ₙ = μ[(ΔMₙ)²|ℱₙ]`, which is what \
-\"predictable quadratic variation\" means; the definition itself is the Doob predictable part of \
-`M²`, and this is the identification a referee needs"]
 lemma predQuadVar_succ_sub_eq (hM : Martingale M ℱ μ) (n : ℕ)
     (hd2 : MemLp (fun ω ↦ M (n + 1) ω - M n ω) 2 μ)
     (hprod : Integrable (M n * (M (n + 1) - M n)) μ) :
@@ -328,8 +320,6 @@ lemma predQuadVar_le_of_bound [IsFiniteMeasure μ] (hM : Martingale M ℱ μ) {c
 /-- **`M² - ⟨M⟩` is a martingale.**
 For an adapted process `M` with square-integrable values, `M² - ⟨M⟩` is a
 martingale, being the martingale part of `M²` in its Doob decomposition. -/
-@[specifies predQuadVar "the compensator property, the part of its characterization that carries \
-the content: `⟨M⟩` is what turns `M²` into a martingale"]
 lemma martingale_sq_sub_predQuadVar [IsFiniteMeasure μ]
     (hM : StronglyAdapted ℱ M) (hM2 : ∀ n, MemLp (M n) 2 μ) :
     Martingale (fun n ↦ (fun ω ↦ M n ω ^ 2) - predQuadVar M ℱ μ n) ℱ μ :=
@@ -367,8 +357,8 @@ property is the content; predictability and `⟨M⟩₀ = 0` are what make it pi
 do so exactly, up to `Indistinguishable`.
 
 The theorem below states it: its hypotheses on `A` are the property, and `⟨M⟩` has it by the
-`@[specifies]` lemmas above (`martingale_sq_sub_predQuadVar`, `isStronglyPredictable_predQuadVar`,
-`predQuadVar_zero`, `integrable_predQuadVar`), which `@[characterization]` checks. -/
+lemmas above (`martingale_sq_sub_predQuadVar`, `isStronglyPredictable_predQuadVar`,
+`predQuadVar_zero`, `integrable_predQuadVar`). -/
 
 /-- **`⟨M⟩` is the unique compensator of `M²`**: any `A` that is predictable, null at `0`,
 integrable, and such that `M² - A` is a martingale, is indistinguishable from `⟨M⟩`. This is the
@@ -377,10 +367,7 @@ uniqueness of the Doob decomposition (`predictablePart_add_ae_eq`) applied to th
 that is already indistinguishability.
 
 Uniqueness needs nothing of `M`; that `⟨M⟩` itself has the property needs `M` adapted and square
-integrable, the hypotheses of `martingale_sq_sub_predQuadVar`, which `@[characterization]` records
-as where it holds. -/
-@[characterization "the compensator of `M²`: predictable, null at `0`, and turning `M²` into a \
-martingale"]
+integrable, the hypotheses of `martingale_sq_sub_predQuadVar`. -/
 lemma indistinguishable_predQuadVar [IsFiniteMeasure μ] {A : ℕ → Ω → ℝ}
     (hmart : Martingale (fun n ↦ (fun ω ↦ M n ω ^ 2) - A n) ℱ μ)
     (hpred : IsStronglyPredictable ℱ A) (hzero : A 0 = 0) (hint : ∀ n, Integrable (A n) μ) :

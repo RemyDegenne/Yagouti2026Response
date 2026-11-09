@@ -6,7 +6,6 @@ Authors: Rémy Degenne
 module
 
 public import AlphaRAR.ForLMLExplore.SequentialLearning.PullCount
-public meta import TrustAnnotations
 
 /-!
 # The means of a kernel
@@ -30,8 +29,6 @@ variable {𝓐 𝓨 : Type*} {m𝓐 : MeasurableSpace 𝓐} {m𝓨 : MeasurableS
 /-- The means of a kernel. -/
 noncomputable def means (ν : Kernel 𝓐 𝓨) (k : 𝓐) : 𝓨 := (ν k)[id]
 
-@[specifies means "the defining formula, stated so that a reader never has to unfold the \
-definition to know what the mean at `k` is"]
 lemma means_apply (ν : Kernel 𝓐 𝓨) (k : 𝓐) : ν.means k = (ν k)[id] := rfl
 
 end ProbabilityTheory.Kernel

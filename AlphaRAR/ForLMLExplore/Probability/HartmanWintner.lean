@@ -6,7 +6,6 @@ Authors: Rémy Degenne
 module
 
 public import AlphaRAR.ForLMLExplore.Probability.HartmanWintnerTruncation
-public meta import TrustAnnotations
 
 /-!
 # The i.i.d. Hartman–Wintner law of the iterated logarithm
@@ -75,9 +74,6 @@ lemma strictMono_nat_div_log_add_two :
   exact h
 
 /-- The log-level cutoff `b_j = √(j/log(j+2))` is strictly monotone. -/
-@[specifies logCutoff "the levels grow strictly, so the low truncations `(-b_j, b_j]` are nested \
-and the boundary atoms `{-b_j}` are pairwise distinct — the fact the layered decomposition rests \
-on"]
 lemma strictMono_logCutoff : StrictMono logCutoff := by
   intro i j hij
   simp only [logCutoff]
@@ -280,8 +276,6 @@ lemma tendsto_logCutoff_mul_sqrt_loglog_div :
     exact loglog_le_loglog hn3 (by linarith)
 
 /-- `b_j ≤ √j`: the low cutoff is below the high cutoff. -/
-@[specifies logCutoff "the ordering that makes `b_j` the *low* cutoff: it never overtakes the high \
-cutoff `√j`, so the medium band `(b_j, √j]` is non-degenerate"]
 lemma logCutoff_le_sqrt (j : ℕ) : logCutoff j ≤ √(j : ℝ) := by
   rw [logCutoff]
   refine Real.sqrt_le_sqrt ?_

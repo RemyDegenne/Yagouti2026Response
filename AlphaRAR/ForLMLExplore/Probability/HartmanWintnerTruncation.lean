@@ -12,7 +12,6 @@ public import AlphaRAR.ForLMLExplore.MeasureTheory.Integral.TsumMeasureIoi
 public import Mathlib.Probability.ConditionalExpectation
 public import Mathlib.Analysis.SumIntegralComparisons
 public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
-public meta import TrustAnnotations
 
 /-!
 # Truncations of i.i.d. sums, for the Hartman–Wintner law of the iterated logarithm
@@ -184,8 +183,6 @@ noncomputable def natFiltLT {Ω : Type*} {m0 : MeasurableSpace Ω} (Y : ℕ → 
 
 /-- `Y i` is measurable with respect to `natFiltLT Y hY n` whenever `i < n` (`Y i` enters the
 filtration strictly before `n`). -/
-@[specifies natFiltLT "one half of \"σ(Y_0,…,Y_{n-1})\": the filtration is large enough to see \
-every strictly earlier variable, which is what makes partial sums adapted"]
 lemma stronglyMeasurable_natFiltLT {Y : ℕ → Ω → ℝ} (hY : ∀ i, StronglyMeasurable (Y i))
     {i n : ℕ} (hin : i < n) :
     StronglyMeasurable[(natFiltLT Y hY : Filtration ℕ m0) n] (Y i) :=
@@ -195,27 +192,22 @@ lemma stronglyMeasurable_natFiltLT {Y : ℕ → Ω → ℝ} (hY : ∀ i, Strongl
 /-- **`natFiltLT` is the smallest such filtration.** Any filtration that already sees every
 strictly earlier variable contains it, since each `σ(Y j)` with `j < n` is below its level `n` and
 `natFiltLT` is the supremum of exactly those. -/
-@[specifies natFiltLT "not too large: it is below every filtration that sees the strict past — \
-without this, `Filtration.natural` and `⊤` would do too"]
 lemma natFiltLT_le {Y : ℕ → Ω → ℝ} (hY : ∀ i, StronglyMeasurable (Y i)) {𝒢 : Filtration ℕ m0}
     (h𝒢 : ∀ i n, i < n → StronglyMeasurable[𝒢 n] (Y i)) : (natFiltLT Y hY : Filtration ℕ m0) ≤ 𝒢 :=
   fun n ↦ iSup₂_le fun j hj ↦ (h𝒢 j n hj).measurable.comap_le
 
 /-! #### Characterization
 
-The two `@[specifies]` claims above are the two halves of a single description, and together they
-are the whole of it: `natFiltLT Y hY` is the **least** filtration that sees every strictly earlier
+The two lemmas above are the two halves of a single description, and together they are the whole
+of it: `natFiltLT Y hY` is the **least** filtration that sees every strictly earlier
 variable. Large enough is `stronglyMeasurable_natFiltLT`; not too large is `natFiltLT_le`, and it
 is minimality that carries the off-by-one — the filtrations seeing `Y i` for `i ≤ n` also see it
 for `i < n`, and it is only by being least that `natFiltLT` excludes `Y n` from level `n`. The
-theorem below states that description; `@[characterization]` checks that `natFiltLT` has it, from
-those two lemmas. -/
+theorem below states that description; `natFiltLT` has it by those two lemmas. -/
 
 /-- **`natFiltLT` is the least filtration seeing the strict past**, and nothing else is: a least
 element of an order is unique, so any filtration that sees every strictly earlier variable and is
 below every other such filtration *is* `natFiltLT Y hY`, on the nose rather than up to anything. -/
-@[characterization "the least filtration seeing every strictly earlier variable — `Y i` is known \
-at level `n` exactly when `i < n`"]
 lemma eq_natFiltLT {Y : ℕ → Ω → ℝ} (hY : ∀ i, StronglyMeasurable (Y i)) {𝒢 : Filtration ℕ m0}
     (h𝒢 : ∀ i n, i < n → StronglyMeasurable[𝒢 n] (Y i))
     (hle : ∀ 𝒢' : Filtration ℕ m0, (∀ i n, i < n → StronglyMeasurable[𝒢' n] (Y i)) → 𝒢 ≤ 𝒢') :
@@ -224,9 +216,6 @@ lemma eq_natFiltLT {Y : ℕ → Ω → ℝ} (hY : ∀ i, StronglyMeasurable (Y i
 
 /-- The σ-algebra `σ(Y_n)` is independent of the past `𝒢_n = σ(Y_0,…,Y_{n-1})`, from the
 independence of `Y`. This is the disjoint-index instance of `indep_iSup_of_disjoint`. -/
-@[specifies natFiltLT "the other half, and the one that distinguishes this from \
-`Filtration.natural`: `Y n` is *not* seen at level `n`, so the increment is still fresh — an \
-off-by-one here would force `S 0 = Y 0 ≠ 0` and destroy the martingale property"]
 lemma indep_comap_natFiltLT {Y : ℕ → Ω → ℝ} (hY : ∀ i, StronglyMeasurable (Y i))
     (hindep : iIndepFun Y μ) (n : ℕ) :
     Indep (MeasurableSpace.comap (Y n) (inferInstance : MeasurableSpace ℝ))
@@ -950,9 +939,6 @@ lemma measurable_mediumTrunc (j : ℕ) : Measurable (mediumTrunc j) :=
       (measurableSet_le continuous_abs.measurable measurable_const))
 
 /-- `mediumTrunc j ∘ X = X · 𝟙{√(j/log(j+2)) < |X| ≤ √j}` as an indicator over `Ω`. -/
-@[specifies mediumTrunc "the band the truncation keeps, in the composed form the proofs actually \
-use: strictly above the low cutoff `b_j` and at most the high cutoff `√j`, and `0` elsewhere. The \
-strict/non-strict split at the two ends is what makes low, medium and high parts tile `ℝ`"]
 lemma mediumTrunc_comp_eq {X : Ω → ℝ} (j : ℕ) :
     (fun ω ↦ mediumTrunc j (X ω))
       = Set.indicator {ω | √((j : ℝ) / log ((j : ℝ) + 2)) < |X ω| ∧ |X ω| ≤ √(j : ℝ)} X := by
@@ -979,8 +965,6 @@ lemma medium_variance_summable_seq [IsProbabilityMeasure μ] {Y : ℕ → Ω →
   · rfl
 
 /-- The medium truncation is bounded by the high cutoff `√j`. -/
-@[specifies mediumTrunc "what makes it a *truncation* rather than a restriction: the result is \
-bounded by `√j` uniformly in the argument, which is the hypothesis every increment bound needs"]
 lemma abs_mediumTrunc_le (j : ℕ) (x : ℝ) : |mediumTrunc j x| ≤ √(j : ℝ) := by
   rw [mediumTrunc]
   by_cases h : x ∈ {x : ℝ | √((j : ℝ) / log ((j : ℝ) + 2)) < |x| ∧ |x| ≤ √(j : ℝ)}
@@ -1019,10 +1003,6 @@ lemma martingale_centeredMedium [IsProbabilityMeasure μ] {Y : ℕ → Ω → �
       rw [integral_sub ((memLp_two_mediumTrunc hY j).integrable one_le_two) (integrable_const _)]
       simp)
 
-set_option maxHeartbeats 400000 in
--- The medium SLLN threads the weighted-series martingale, the discrete Itô isometry and the
--- variance-summability comparison through the general-weight SLLN; the accumulated elaboration
--- exceeds the default heartbeat budget.
 /-- **The medium part is negligible.** For i.i.d. `Y` with a bare second moment,
 `W_m = ∑_{j<m}(Y_j^{\mathrm M} − 𝔼 Y_j^{\mathrm M}) = o(√(m log log m))` a.s.: precisely,
 `W_m / √(2(m+3) log log(m+3)) → 0` (and `√(2(m+3)L(m+3)) ∼ √(2m L(m))`). The medium martingale

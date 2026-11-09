@@ -9,7 +9,6 @@ public import AlphaRAR.ForLMLExplore.Probability.Martingale.LILCommon
 public import AlphaRAR.ForLMLExplore.Probability.Martingale.QuadraticVariation
 public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.Probability.Martingale.OptionalStopping
-public meta import TrustAnnotations
 
 /-!
 # The exponential supermartingale and Freedman's inequality
@@ -179,9 +178,6 @@ For a martingale `M` with `M 0 = 0`, square-integrable, with increments bounded 
 The one-step bound is `μ[Z_{i+1} | ℱ_i] = Z_i e^{-½(1+δ)θ² Δ⟨M⟩_i} μ[e^{θ ΔM_i} | ℱ_i]
 ≤ Z_i e^{-½(1+δ)θ² Δ⟨M⟩_i}(1 + ½(1+δ)θ² Δ⟨M⟩_i) ≤ Z_i`, using `condExp_exp_increment_le` and
 `1 + y ≤ eʸ`. -/
-@[specifies expProcess "the reason for the `½(1+δ)` coefficient: it is the smallest compensator \
-that still yields a supermartingale under the one-step MGF bound, and shrinking it towards the \
-Gaussian `½` is exactly what buys the sharp LIL constant"]
 lemma supermartingale_expProcess [IsFiniteMeasure μ] (hM : Martingale M ℱ μ)
     (hM0 : M 0 =ᵐ[μ] 0) {c θ δ η : ℝ} (hδ : 0 ≤ δ)
     (hη : ∀ x : ℝ, |x| ≤ η → exp x ≤ 1 + x + (1 + δ) / 2 * x ^ 2) (hθ : |θ| * c ≤ η)

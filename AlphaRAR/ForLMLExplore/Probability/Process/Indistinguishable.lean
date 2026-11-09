@@ -14,9 +14,9 @@ A process defined through conditional expectations is only ever pinned down up t
 every uniqueness statement about one is a statement up to `Indistinguishable`: almost surely, the
 two processes agree at every time.
 
-This is the relation the `@[characterization uniqueness]` theorems of such processes are stated
-up to — `AlphaRAR.predQuadVar` among them — which is why it lives in a file of its own rather
-than beside any one of them.
+This is the relation the uniqueness theorems of such processes are stated up to —
+`AlphaRAR.predQuadVar` among them — which is why it lives in a file of its own rather than beside
+any one of them.
 -/
 
 @[expose] public section

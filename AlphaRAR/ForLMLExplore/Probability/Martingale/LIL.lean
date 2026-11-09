@@ -6,7 +6,6 @@ Authors: Rémy Degenne
 module
 
 public import AlphaRAR.ForLMLExplore.Probability.Martingale.Freedman
-public meta import TrustAnnotations
 
 /-!
 # Martingale laws of the iterated logarithm
@@ -309,10 +308,6 @@ lemma ae_eventually_lt_block_of_growing_loglog [IsProbabilityMeasure μ]
   congr 1
   linear_combination (α * C) * hst - ((1 + δ) / 2 * α ^ 2 * v) * hs2
 
-set_option maxHeartbeats 800000 in
--- The repackaging combines the per-block bound with the least-`j` estimates `N_j ≤ ρn+1` and
--- the additive `log(j+2) ≤ D_ρ + loglog n` through a single `nlinarith`; the accumulated linear
--- arithmetic exceeds the default heartbeat budget.
 /-- **Sharp `√(2vn loglog n)` LIL for a growing-increment martingale with a linear quadratic
 variation bound.** With time horizons `N_j = ⌈ρ^j⌉` (`ρ ↓ 1`), the block condition
 `c_j √(log(j+2)/N_j) → 0`, and `⟨M⟩_n ≤ v·n`, almost surely eventually

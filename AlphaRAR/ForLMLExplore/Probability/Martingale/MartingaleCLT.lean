@@ -8,7 +8,6 @@ module
 public import AlphaRAR.ForLMLExplore.Probability.Martingale.QuadraticVariation
 public import AlphaRAR.ForLMLExplore.MeasureTheory.Function.TendstoInDistribution
 public import AlphaRAR.ForLMLExplore.Probability.Martingale.MartingaleCLTIngredients
-public meta import TrustAnnotations
 
 /-!
 # Martingale central limit theorem (Lindeberg form)
@@ -117,23 +116,18 @@ lemma integrable_sq (n i : ℕ) :
 it that could be wrong — is which variable is averaged and against which σ-algebra. The
 characterization says that without naming `condExp`: `condVar n i` is the `𝓕 n i`-measurable
 function with the same integrals as `d n i ²` over `𝓕 n i`-sets, and nothing else is, up to a.e.
-equality. The three `@[specifies]` lemmas before it are where `condVar` is checked to have those
-properties, and so where which variable and which σ-algebra is recorded. -/
+equality. The three lemmas before it are where `condVar` is checked to have those properties, and
+so where which variable and which σ-algebra is recorded. -/
 
 /-- The cell variance is known at the start of the cell. -/
-@[specifies condVar "it is known at the start of the cell: measurable for the cell's own past \
-`𝓕 n i`"]
 lemma aestronglyMeasurable_condVar (n i : ℕ) : AEStronglyMeasurable[A.𝓕 n i] (A.condVar n i) P :=
   stronglyMeasurable_condExp.aestronglyMeasurable
 
 /-- The cell variance is integrable on every set. -/
-@[specifies condVar "it is integrable, as a conditional expectation"]
 lemma integrableOn_condVar (n i : ℕ) (s : Set Ω) : IntegrableOn (A.condVar n i) s P :=
   integrable_condExp.integrableOn
 
 /-- **The cell variance averages the squared increment over the cell's past.** -/
-@[specifies condVar "it has the integrals of the squared increment `d n i ²` over every event of \
-the cell's past: the defining property of the conditional second moment"]
 lemma setIntegral_condVar [IsFiniteMeasure P] {n i : ℕ} {s : Set Ω}
     (hs : MeasurableSet[A.𝓕 n i] s) :
     ∫ ω in s, A.condVar n i ω ∂P = ∫ ω in s, (A.d n i ω) ^ 2 ∂P :=
@@ -143,8 +137,6 @@ lemma setIntegral_condVar [IsFiniteMeasure P] {n i : ℕ} {s : Set Ω}
 any `𝓕 n i`-measurable function, integrable on the `𝓕 n i`-sets of finite measure, with the
 integrals of `d n i ²` over them, agrees a.e. with `condVar n i`. This is Mathlib's
 `ae_eq_condExp_of_forall_setIntegral_eq`. -/
-@[characterization "the conditional second moment of the cell increment given the cell's own \
-past — which increment and which σ-algebra is the entire content of `condVar`"]
 lemma ae_eq_condVar [IsFiniteMeasure P] {n i : ℕ} {g : Ω → ℝ}
     (hgm : AEStronglyMeasurable[A.𝓕 n i] g P)
     (hgi : ∀ s, MeasurableSet[A.𝓕 n i] s → P s < ∞ → IntegrableOn g s P)
@@ -155,9 +147,6 @@ lemma ae_eq_condVar [IsFiniteMeasure P] {n i : ℕ} {g : Ω → ℝ}
 
 /-- **Uniform smallness of the conditional variances**: each cell variance is controlled by `ε²`
 plus the whole Lindeberg sum. -/
-@[specifies lindeberg "what the Lindeberg quantity buys, and the reason it is the right \
-uniform-asymptotic-negligibility statistic: driving it to `0` forces every individual cell \
-variance to `0` as well"]
 lemma condVar_le_lindeberg [IsProbabilityMeasure P] (n i : ℕ) (hi : i < A.k n) (ε : ℝ) :
     A.condVar n i ≤ᵐ[P] fun ω ↦ ε ^ 2 + A.lindeberg n ε ω := by
   have hsq := condExp_sq_le (A.measurable_d n i) (A.memLp n i) ((A.𝓕 n).le i) ε
@@ -390,9 +379,6 @@ lemma condVar_trunc [IsFiniteMeasure P] (B : ℝ) (n i : ℕ) :
 
 /-- **No overshoot**: the predictable variation of the array truncated at level `B ≥ 0` is
 bounded by the constant `B`. -/
-@[specifies trunc "the point of stopping on `V_{n,i+1} ≤ B` rather than on `V_{n,i} ≤ B`: the \
-level is tested *before* the cell is admitted, so the truncated variation never overshoots `B` — \
-with the other index convention it could overshoot by one full cell"]
 lemma predVar_trunc_le [IsProbabilityMeasure P] {B : ℝ} (hB : 0 ≤ B) (n : ℕ) :
     (A.trunc B).predVar n ≤ᵐ[P] fun _ ↦ B := by
   filter_upwards [ae_all_iff.mpr fun i ↦ A.condVar_trunc B n i,
@@ -460,10 +446,6 @@ lemma condExp_Zproc_increment [IsProbabilityMeasure P] (t : ℝ) (n j : ℕ)
   rw [h1, Pi.sub_apply, h2, congrFun hZjc ω]
 
 /-- One-step increment of the partial predictable variation: `V_{n,j+1} = V_{n,j} + v_{n,j}`. -/
-@[specifies partialVar "the recursion that, with `partialVar n 0 = 0`, determines the running \
-variation; note the index convention `V_{n,j+1}` accumulates cells `0,…,j`",
-  specifies condVar "identifies the cell variance as exactly the increment of the running \
-predictable variation, which is the role it plays everywhere below"]
 lemma partialVar_succ (n j : ℕ) (ω : Ω) :
     A.partialVar n (j + 1) ω = A.partialVar n j ω + A.condVar n j ω := by
   simp only [MartDiffArray.partialVar, Finset.sum_range_succ]
@@ -500,8 +482,6 @@ lemma norm_condExp_Zproc_increment_le [IsProbabilityMeasure P] (t : ℝ) (n j : 
     Real.exp_add, mul_assoc]
 
 /-- The `Z`-process starts at `1`: `Z_{n,0} = 1` (empty partial sum and variation). -/
-@[specifies Zproc "the base case; with `Zproc_succ` it determines the whole process, and it is \
-what makes `∫ Z_{n,k_n} → 1` the statement the characteristic-function argument needs"]
 lemma Zproc_zero (t : ℝ) (n : ℕ) : A.Zproc t n 0 = fun _ ↦ 1 := by
   funext ω
   simp [MartDiffArray.Zproc, MartDiffArray.partialSum, MartDiffArray.partialVar]
@@ -707,8 +687,6 @@ lemma lindeberg_nonneg (n : ℕ) (ε : ℝ) : (0 : Ω → ℝ) ≤ᵐ[P] A.linde
   exact Finset.sum_nonneg fun j _ ↦ hω j
 
 /-- The Lindeberg quantity never exceeds the predictable variation (dropping the indicators). -/
-@[specifies lindeberg "places the Lindeberg quantity correctly: it is the part of the predictable \
-variation carried by the cells exceeding `ε`, hence never more than the whole"]
 lemma lindeberg_le_predVar (n : ℕ) (ε : ℝ) : A.lindeberg n ε ≤ᵐ[P] A.predVar n := by
   have hcell : ∀ j, (P[{ω | ε < |A.d n j ω|}.indicator (fun ω ↦ (A.d n j ω) ^ 2) | A.𝓕 n j])
       ≤ᵐ[P] A.condVar n j := by
@@ -785,9 +763,6 @@ lemma integral_sum_condExp_min_le [IsProbabilityMeasure P] {B : ℝ} {n : ℕ}
         linarith [hmul]
 
 /-- The row sum is the partial sum through step `k n`. -/
-@[specifies rowSum "the row is summed over its full declared length `k n` and no further",
-  specifies partialSum "identifies `partialSum` as the running version of `rowSum`: the two agree \
-at the end of the row, so every statement proved about prefixes transfers to the row sum"]
 lemma rowSum_eq_partialSum (n : ℕ) : A.rowSum n = A.partialSum n (A.k n) := rfl
 
 /-- The row sum is measurable. -/
@@ -817,8 +792,6 @@ lemma integrable_expI_rowSum [IsFiniteMeasure P] (t : ℝ) (n : ℕ) :
     (ae_of_all _ fun ω ↦ le_of_eq (A.norm_expI_rowSum t n ω))
 
 /-- The predictable variation is the partial variation through step `k n`. -/
-@[specifies predVar "the variation accumulates over the full declared row length `k n` and no \
-further, matching `rowSum_eq_partialSum` on the sums side"]
 lemma predVar_eq_partialVar (n : ℕ) : A.predVar n = A.partialVar n (A.k n) := rfl
 
 /-- **The partial row sums form a martingale** for the row filtration:
@@ -1080,8 +1053,6 @@ lemma predVar_trunc_ae_eq_of_le [IsFiniteMeasure P] (B : ℝ) (n : ℕ) :
     le_trans (hmo i (Finset.mem_range.mp hi)) hVle) _
 
 /-- On `{V_n ≤ B}`, the truncated row sum agrees with the original row sum. -/
-@[specifies trunc "the other half: truncation is inert on the event `{V_n ≤ B}`, so it changes \
-nothing where it matters and the bounded-variance CLT transfers back to the original array"]
 lemma rowSum_trunc_ae_eq_of_le [IsFiniteMeasure P] (B : ℝ) (n : ℕ) :
     ∀ᵐ ω ∂P, A.predVar n ω ≤ B → (A.trunc B).rowSum n ω = A.rowSum n ω := by
   filter_upwards [A.partialVar_succ_le_predVar n] with ω hmo hVle
@@ -1237,9 +1208,6 @@ satisfying the conditional Lindeberg condition. Then the row sums `S_n = ∑_i �
 distribution to any `Y` with law `𝒩(0, σ²)` — the statement has the shape of Mathlib's
 `tendstoInDistribution_inv_sqrt_mul_sum_sub`. For the laws of the row sums themselves take
 `Y := id` on `(ℝ, 𝒩(0, σ²))` (`HasLaw.id`) and `TendstoInDistribution.tendsto`. -/
-@[specifies MartDiffArray "certifies the bundled fields are exactly the data the classical \
-Hall–Heyde martingale CLT runs on: nothing beyond square-integrability, the \
-martingale-difference property and the `𝓕 (i+1)`-adaptedness is needed to reach the Gaussian limit"]
 theorem mart_clt [IsProbabilityMeasure P] {Ω' : Type*} {mΩ' : MeasurableSpace Ω'}
     {P' : Measure Ω'} [IsProbabilityMeasure P'] {Y : Ω' → ℝ} {σ2 : ℝ} (hσ2 : 0 ≤ σ2)
     (hY : HasLaw Y (gaussianReal 0 σ2.toNNReal) P')
@@ -1293,9 +1261,6 @@ noncomputable def ofSeq : MartDiffArray P where
   adapted n i := (hadapted i).const_mul _
 
 /-- The row sum of `ofSeq` is `M_n/√(a n)` with `M_n = ∑_{i<n} d_i`. -/
-@[specifies ofSeq "the classical case reduces correctly: row `n` really is the first `n` \
-increments scaled by `1/√(a n)`, so its row sum is the normalized partial sum `M_n/√(a n)`",
-  specifies rowSum "computes the intended sum in the concrete case a reader can check by hand"]
 lemma rowSum_ofSeq (n : ℕ) :
     (ofSeq 𝓕 d a hmemLp hmgdiff hadapted).rowSum n
       = fun ω ↦ (√(a n))⁻¹ * ∑ i ∈ Finset.range n, d i ω := by
@@ -1305,9 +1270,6 @@ lemma rowSum_ofSeq (n : ℕ) :
   rw [← Finset.mul_sum]
 
 /-- The predictable variation of `ofSeq` is `⟨M⟩_n / a_n = (1/a_n) ∑_{i<n} E[d_i²|𝓕 i]`. -/
-@[specifies ofSeq "confirms the normalizer enters as `1/√(a n)` on the increments, hence `1/a n` \
-on the variation — so `a n` is a *variance* scale, and `predVar → σ²` says `⟨M⟩_n ∼ σ² a_n`",
-  specifies predVar "computes to the familiar `⟨M⟩_n/a_n` in the concrete case"]
 lemma predVar_ofSeq (ha : ∀ n, 0 ≤ a n) (n : ℕ) :
     (ofSeq 𝓕 d a hmemLp hmgdiff hadapted).predVar n
       =ᵐ[P] fun ω ↦ (a n)⁻¹ * ∑ i ∈ Finset.range n, (P[fun ω ↦ (d i ω) ^ 2 | 𝓕 i]) ω := by
