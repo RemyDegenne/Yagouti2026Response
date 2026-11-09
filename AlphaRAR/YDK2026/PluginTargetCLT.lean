@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.TendstoInMeasure
+public import AlphaRAR.ForLMLExplore.MeasureTheory.Function.TendstoInMeasure
 public import AlphaRAR.YDK2026.ResponseCLTJoint
 public meta import TrustAnnotations
 

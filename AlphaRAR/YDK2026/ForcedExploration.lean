@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.TaylorRemainder
+public import AlphaRAR.ForLMLExplore.Analysis.Calculus.TaylorRemainder
 public import AlphaRAR.YDK2026.ARTSNormality
 public import AlphaRAR.YDK2026.PropDevLIL
 public meta import TrustAnnotations

@@ -5,8 +5,8 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.LeanMachineLearning.Means
-public import AlphaRAR.Mathlib.HasCondDistrib
+public import AlphaRAR.ForLMLExplore.SequentialLearning.Means
+public import AlphaRAR.ForLMLExplore.Probability.HasCondDistrib
 public import LeanMachineLearning.SequentialLearning.FiniteActions
 public import LeanMachineLearning.SequentialLearning.Means
 

@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.AnscombeCLT
+public import AlphaRAR.ForLMLExplore.Probability.AnscombeCLT
 public import AlphaRAR.YDK2026.ResponseLIL
 public import AlphaRAR.YDK2026.ResponseCLT
 

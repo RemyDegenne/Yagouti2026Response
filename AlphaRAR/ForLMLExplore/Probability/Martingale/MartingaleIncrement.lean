@@ -5,9 +5,9 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.StochasticOrder
-public import AlphaRAR.Mathlib.MartingaleMaximal
-public import AlphaRAR.Mathlib.IncrementControl
+public import AlphaRAR.ForLMLExplore.Probability.StochasticOrder
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.MartingaleMaximal
+public import AlphaRAR.ForLMLExplore.Analysis.Normed.Group.IncrementControl
 public meta import TrustAnnotations
 
 /-!

@@ -5,8 +5,8 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.TsumMeasureIoi
-public import AlphaRAR.Mathlib.LILTruncation
+public import AlphaRAR.ForLMLExplore.MeasureTheory.Integral.TsumMeasureIoi
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.LILTruncation
 public import AlphaRAR.YDK2026.Response
 public meta import TrustAnnotations
 
@@ -527,8 +527,9 @@ lemma abs_truncRespMart_increment_le (k : 𝓐) (i : ℕ) (ω : Ω) :
 The truncated response martingale `M̃ = truncRespMart` is an `L²` martingale (for the
 action-augmented filtration `𝒢`) starting at `0`, with `√i`-growing increments `|ΔM̃_i| ≤ 2√i` and
 linear quadratic variation `⟨M̃⟩_n ≤ V_k n`. It therefore satisfies the hypotheses of the general
-finite-variance LIL of `AlphaRAR/Mathlib/LILTruncation.lean`, from which the block bounds below
-are read off directly (with increment scale `a = 2` and variance scale `v = V_k = Var[id; ν k]`). -/
+finite-variance LIL of `AlphaRAR/ForLMLExplore/Probability/Martingale/LILTruncation.lean`, from
+which the block bounds below are read off directly (with increment scale `a = 2` and variance scale
+`v = V_k = Var[id; ν k]`). -/
 
 omit [MeasurableSingletonClass 𝓐] [IsMarkovKernel ν] [IsProbabilityMeasure P] in
 /-- The truncated response martingale starts at `0`. -/

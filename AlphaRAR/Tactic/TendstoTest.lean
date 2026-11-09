@@ -5,13 +5,13 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.Tactic.Tendsto
+public import AlphaRAR.Tactic.Tendsto
 
 /-!
 # Regression tests for the `tendsto` tactic
 
 Each `example` mirrors a hand-written limit-algebra idiom found in the project's asymptotic
-proofs (see `AlphaRAR/Mathlib/StochasticOrder.lean`,
+proofs (see `AlphaRAR/ForLMLExplore/Probability/StochasticOrder.lean`,
 `AlphaRAR/YDK2026/ResponseConsistency.lean`, `AlphaRAR/YDK2026/ResponseCLT.lean`).
 -/
 

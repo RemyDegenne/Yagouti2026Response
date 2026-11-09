@@ -6,9 +6,9 @@ Authors: Rémy Degenne
 module
 
 public import Mathlib.Probability.CentralLimitTheorem
-public import AlphaRAR.Mathlib.MartingaleMaximal
-public import AlphaRAR.Mathlib.HartmanWintner
-public import AlphaRAR.Mathlib.MartingaleCLT
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.MartingaleMaximal
+public import AlphaRAR.ForLMLExplore.Probability.HartmanWintner
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.MartingaleCLT
 
 /-!
 # The Anscombe random-time-change central limit theorem

@@ -6,7 +6,7 @@ Authors: Rémy Degenne
 module
 
 public import AlphaRAR.YDK2026.OptionalSkipping
-public import AlphaRAR.Mathlib.HartmanWintner
+public import AlphaRAR.ForLMLExplore.Probability.HartmanWintner
 public import AlphaRAR.YDK2026.ResponseConsistency
 
 /-!

@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.LeanMachineLearning.PullCount
+public import AlphaRAR.ForLMLExplore.SequentialLearning.PullCount
 public meta import TrustAnnotations
 
 /-!

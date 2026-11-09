@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.PropDev
+public import AlphaRAR.ForLMLExplore.Probability.StochasticOrder.PropDev
 public import AlphaRAR.YDK2026.ARTSAlgorithm
 public import AlphaRAR.YDK2026.ResponseIncrement
 public import AlphaRAR.YDK2026.PluginTargetCLT

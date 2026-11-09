@@ -1,7 +1,7 @@
 # Review of the LIL files: what is reusable theory, and what would Mathlib want
 
 Date: 2026-09-02 (rewritten the same day with a different yardstick). Files reviewed:
-`AlphaRAR/Mathlib/LIL.lean`, `LILLogLog.lean`, `LILTruncation.lean`, `LILSharp.lean`,
+`AlphaRAR/ForLMLExplore/Probability/Martingale/LIL.lean`, `LILLogLog.lean`, `LILTruncation.lean`, `LILSharp.lean`,
 `LILHartmanWintner.lean`, plus the new `LILCommon.lean` (Stage 1 below). Usage was checked
 repo-wide with comments stripped, and every piece was compared against what Mathlib (rev
 `17dadc59`, Lean `v4.34.0-rc2`) already provides.
@@ -203,7 +203,7 @@ Beyond the chain surgery of L3, these are the recurring library-readiness issues
   `IsBigO`); `M 0 =ᵐ[μ] 0` plus `∀ n, MemLp (M n) 2 μ` as hypotheses where the latter follows
   from bounded increments (derive it, as `_of_bdd` already does).
 - **Repo-only tooling in library files.** `@[specifies]` and `@[characterization]` attributes,
-  the `Characterization` import, and the custom `tendsto` tactic (`AlphaRAR.Mathlib.Tactic.Tendsto`,
+  the `Characterization` import, and the custom `tendsto` tactic (`AlphaRAR.Tactic.Tendsto`,
   three uses in `LILSharp.lean`). Upstream files cannot depend on any of these; the tactic uses
   are one-line `Tendsto` lemma applications.
 - **Naming.** Mathlib will not accept `_sharp'`, `_sharp_all`, `hw_`, `hloglogpos`, or `lam` for
@@ -256,7 +256,7 @@ Stages 2 and 3 delete code; nothing in them is blocked by the blueprint any more
 
 ## Status (2026-09-02): Stage 1 done, nothing deleted
 
-The shared helpers live in `AlphaRAR/Mathlib/LILCommon.lean` (imported by `LIL.lean`, hence by
+The shared helpers live in `AlphaRAR/ForLMLExplore/Probability/Martingale/LILCommon.lean` (imported by `LIL.lean`, hence by
 every LIL file), and every duplicated proof block calls them. No declaration was removed or
 renamed; only proof bodies changed. The whole project builds with no warnings.
 

@@ -91,12 +91,12 @@ status:
     Definition 5.1, Theorem 5.1 (through Lemma B.1), Theorem 5.2 and Corollary 5.3, proved in
     Appendix B.
 
-    Also formalized, under `AlphaRAR/Mathlib/`: the probabilistic limit theorems that the paper
-    invokes by citation rather than proving, restated and proved here for their own sake and
-    intended for eventual upstreaming to Mathlib — the martingale SLLN used in Appendix A.1
-    (cited there to Chow 1967), the one-sided and sharp log-log martingale laws of the iterated
-    logarithm used in Appendices A.1–A.2 (cited to Stout 1970), with the i.i.d. Hartman–Wintner
-    LIL and optional skipping, and the martingale CLT of Appendix A.2 together with an abstract
+    Also formalized, under `AlphaRAR/ForLMLExplore/`: the probabilistic limit theorems that the
+    paper invokes by citation rather than proving, restated and proved here for their own sake and
+    intended for eventual upstreaming to LMLExplore and Mathlib — the martingale SLLN used in
+    Appendix A.1 (cited there to Chow 1967), the one-sided and sharp log-log martingale laws of
+    the iterated logarithm used in Appendices A.1–A.2 (cited to Stout 1970), with the i.i.d.
+    Hartman–Wintner LIL and optional skipping, and the martingale CLT of Appendix A.2 together with an abstract
     Anscombe theorem. The supporting API — the o_p/O_p notation of Section 2, predictable
     quadratic variation and multivariate Taylor expansion — lives there too.
 
@@ -198,7 +198,7 @@ automation:
         (`leanblueprint pdf/web/checkdecls`) directly. Project-level memory files recorded
         conventions and recurring Lean pitfalls across sessions. No custom MCP servers, no
         proof-search tooling beyond Mathlib's own tactics; one small in-project tactic
-        (`AlphaRAR/Mathlib/Tactic/Tendsto.lean`) was written during the project.
+        (`AlphaRAR/Tactic/Tendsto.lean`) was written during the project.
       cost:
         wall_time: "3 weeks (2026-07-07 to 2026-07-28), 53 commits"
         spend_usd: "subscription-based usage"
@@ -386,7 +386,7 @@ alignment:
       note: "Under the modified schedule condition (⋆); see fidelity.divergences item 2."
     - source: "Lemma 6.1 — Pearson statistic and its asymptotic null distribution (Appendix B.3)"
       lean: "AlphaRAR.isProjection_one_sub_vecMulVec"
-      module: "AlphaRAR.Mathlib.Projection"
+      module: "AlphaRAR.ForLMLExplore.Analysis.Matrix.Projection"
       status: "in-progress"
       note: >-
         Only the idempotent-projection ingredient of the Appendix B.3 proof is formalized; the
@@ -409,13 +409,15 @@ alignment:
         AlphaRAR.mart_maximal, AlphaRAR.mart_maximal_dyadic, AlphaRAR.isBigOpOne_of_lintegral_le,
         AlphaRAR.isBigOpOne_of_lintegral_sq_le, AlphaRAR.tendsto_posPart_sub_div
       module: >-
-        AlphaRAR.Mathlib.MartingaleMaximal, AlphaRAR.Mathlib.StochasticOrder,
-        AlphaRAR.Mathlib.Convergence
+        AlphaRAR.ForLMLExplore.Probability.Martingale.MartingaleMaximal,
+        AlphaRAR.ForLMLExplore.Probability.StochasticOrder,
+        AlphaRAR.ForLMLExplore.Analysis.SpecificLimits.Convergence
       status: "proved"
       note: >-
         Lemma C.3 (Kolmogorov-type inequality) is used only through its consequence
         `AlphaRAR.isBigOpOne_martingale_div_sqrt`, and Lemma C.6 through
-        `AlphaRAR.isBigOpOne_of_bdd_increments`; both are in AlphaRAR.Mathlib.StochasticOrder.
+        `AlphaRAR.isBigOpOne_of_bdd_increments`; both are in
+        AlphaRAR.ForLMLExplore.Probability.StochasticOrder.
     - source: "Proposition C.4 — variance equals inverse Fisher information"
       lean: ""
       module: ""

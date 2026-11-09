@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.QuadraticVariation
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.QuadraticVariation
 public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Mathlib.Analysis.PSeries
 public import Mathlib.Analysis.SpecificLimits.Normed

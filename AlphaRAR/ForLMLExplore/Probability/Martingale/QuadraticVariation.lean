@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.Process
+public import AlphaRAR.ForLMLExplore.Probability.Process.Indistinguishable
 public import Mathlib.Probability.Martingale.Centering
 public meta import TrustAnnotations
 

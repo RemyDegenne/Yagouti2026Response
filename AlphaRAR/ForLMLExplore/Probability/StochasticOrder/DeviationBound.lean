@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.StochasticOrder
+public import AlphaRAR.ForLMLExplore.Probability.StochasticOrder
 
 /-!
 # One-sided `o_p(√n)` deviation bounds

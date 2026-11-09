@@ -5,8 +5,8 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.LILCommon
-public import AlphaRAR.Mathlib.QuadraticVariation
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.LILCommon
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.QuadraticVariation
 public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.Probability.Martingale.OptionalStopping
 public meta import TrustAnnotations

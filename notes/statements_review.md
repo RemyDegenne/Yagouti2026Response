@@ -105,7 +105,7 @@ is equivalent given `hTnn`/`hTsum`.
 ### 6. Two declarations attributed to the wrong module
 
 `isBigOpOne_martingale_div_sqrt` and `isBigOpOne_of_bdd_increments` live in
-`AlphaRAR/Mathlib/MartingaleRate.lean`, not `AlphaRAR.Mathlib.StochasticOrder` as the Appendix-C
+`AlphaRAR/ForLMLExplore/Probability/Martingale/MartingaleRate.lean`, not `AlphaRAR.ForLMLExplore.Probability.StochasticOrder` as the Appendix-C
 alignment note says.
 
 ## 4. Divergences that check out

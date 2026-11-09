@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.Freedman
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.Freedman
 public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Mathlib.Probability.StrongLaw
 
@@ -165,13 +165,14 @@ lemma sum_one_div_sqrt_le (n : ℕ) :
 
 /-! ### A general finite-variance LIL for martingales with `√i`-growing increments
 
-The one-sided LIL of `AlphaRAR/Mathlib/LIL.lean` requires *bounded* increments. Many
-finite-variance martingales instead have increments that grow like `√i` (e.g. a truncated sum
-truncated at level `√i`). For such a martingale the fixed-`c` argument fails, but the dyadic block
-argument still works if one stops at each block horizon `2^j` and uses the *constrained* exponential
-parameter `θ_j = 1/(a√{2^j})`. The lemmas below package this into a reusable tool, stated for an
-abstract martingale `M` with a growing increment bound `|ΔM_i| ≤ a√i` and a linear quadratic
-variation bound `⟨M⟩_n ≤ v·n`, and deliver the two-sided rate `|M_n| = O(√(n log n))` a.s.
+The one-sided LIL of `AlphaRAR/ForLMLExplore/Probability/Martingale/LIL.lean` requires *bounded*
+increments. Many finite-variance martingales instead have increments that grow like `√i` (e.g. a
+truncated sum truncated at level `√i`). For such a martingale the fixed-`c` argument fails, but the
+dyadic block argument still works if one stops at each block horizon `2^j` and uses the
+*constrained* exponential parameter `θ_j = 1/(a√{2^j})`. The lemmas below package this into a
+reusable tool, stated for an abstract martingale `M` with a growing increment bound `|ΔM_i| ≤ a√i`
+and a linear quadratic variation bound `⟨M⟩_n ≤ v·n`, and deliver the two-sided rate
+`|M_n| = O(√(n log n))` a.s.
 
 These belong upstream (a growing-increment companion to a martingale LIL). -/
 

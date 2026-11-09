@@ -5,10 +5,10 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.LIL
-public import AlphaRAR.Mathlib.LILTruncation
-public import AlphaRAR.Mathlib.MartingaleSLLN
-public import AlphaRAR.Mathlib.TsumMeasureIoi
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.LIL
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.LILTruncation
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.MartingaleSLLN
+public import AlphaRAR.ForLMLExplore.MeasureTheory.Integral.TsumMeasureIoi
 public import Mathlib.Probability.ConditionalExpectation
 public import Mathlib.Analysis.SumIntegralComparisons
 public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic

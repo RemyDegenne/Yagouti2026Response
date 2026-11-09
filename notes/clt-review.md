@@ -1,6 +1,6 @@
 # Martingale CLT review (2026-09-02)
 
-Review of `AlphaRAR/Mathlib/MartingaleCLT.lean` from the Mathlib-reusability angle, after the
+Review of `AlphaRAR/ForLMLExplore/Probability/Martingale/MartingaleCLT.lean` from the Mathlib-reusability angle, after the
 quadratic-variation review of the same day (`notes/lil-review.md`, last section). Scope: the
 Lindeberg/Hall–Heyde martingale CLT for a triangular array and its analytic prerequisites; the
 downstream design-level CLTs (`ResponseCLT*.lean`, `JointCLT.lean`, `AnscombeCLT.lean`) were only
@@ -63,7 +63,7 @@ touched where the API changed under them.
 - ~~**Project-wide statement form.**~~ Done the same day: every convergence in distribution in the
   project (twelve files, the two Comparator challenge statements included) is now
   `TendstoInDistribution X atTop id (fun _ ↦ P) ν` with `ν` the limit law. `Slutsky.lean` is gone;
-  `AlphaRAR/Mathlib/TendstoInDistribution.lean` holds the five complements to Mathlib's API that
+  `AlphaRAR/ForLMLExplore/MeasureTheory/Function/TendstoInDistribution.lean` holds the five complements to Mathlib's API that
   the applications need (`congr'` with an eventual change of sequence, `comp` with a subsequence,
   `tendstoInDistribution_id_iff` to name a limit by its law or by a variable,
   `mul_of_tendstoInMeasure_const`, and the Cramér–Wold device `tendstoInDistribution_of_forall_inner`

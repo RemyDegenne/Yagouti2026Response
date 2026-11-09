@@ -5,8 +5,8 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.QuadraticVariation
-public import AlphaRAR.Mathlib.StochasticOrder
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.QuadraticVariation
+public import AlphaRAR.ForLMLExplore.Probability.StochasticOrder
 
 /-!
 # A square-integrable martingale is `O_p(√n)`

@@ -7,9 +7,9 @@ module
 
 public import Mathlib.MeasureTheory.Function.SpecialFunctions.Inner
 public import Mathlib.Probability.CramerWold
-public import AlphaRAR.Mathlib.MultivariateGaussianMap
+public import AlphaRAR.ForLMLExplore.Probability.Distributions.Gaussian.MultivariateGaussianMap
 public import AlphaRAR.YDK2026.ResponseCLT
-public import AlphaRAR.Mathlib.Tactic.Tendsto
+public import AlphaRAR.Tactic.Tendsto
 public import Mathlib.Probability.Distributions.Gaussian.Fernique
 public import Mathlib.Probability.Distributions.Gaussian.Multivariate
 public meta import TrustAnnotations

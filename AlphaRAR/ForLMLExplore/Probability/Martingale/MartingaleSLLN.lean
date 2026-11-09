@@ -5,8 +5,8 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.Kronecker
-public import AlphaRAR.Mathlib.QuadraticVariation
+public import AlphaRAR.ForLMLExplore.Analysis.SpecificLimits.Kronecker
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.QuadraticVariation
 public import Mathlib.Analysis.PSeries
 public import Mathlib.Probability.Martingale.Convergence
 public meta import TrustAnnotations

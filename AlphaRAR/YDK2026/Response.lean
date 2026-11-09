@@ -5,13 +5,13 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.LeanMachineLearning.PullCount
+public import AlphaRAR.ForLMLExplore.SequentialLearning.PullCount
 public import LeanMachineLearning.SequentialLearning.ActionIndicator
 public import LeanMachineLearning.SequentialLearning.FeedbackMartingale
-public import AlphaRAR.LeanMachineLearning.IsAlgEnvSeq
-public import AlphaRAR.Mathlib.HasCondDistrib
-public import AlphaRAR.Mathlib.Variance
-public import AlphaRAR.Mathlib.MartingaleRate
+public import AlphaRAR.ForLMLExplore.SequentialLearning.IsAlgEnvSeq
+public import AlphaRAR.ForLMLExplore.Probability.HasCondDistrib
+public import AlphaRAR.ForLMLExplore.Probability.Moments.Variance
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.MartingaleRate
 public import LeanMachineLearning.SequentialLearning.FiniteActions
 public import LeanMachineLearning.SequentialLearning.StationaryEnv
 public import Mathlib.Topology.Separation.CompletelyRegular

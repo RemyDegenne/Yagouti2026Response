@@ -5,8 +5,8 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.QuadraticVariation
-public import AlphaRAR.Mathlib.TendstoInDistribution
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.QuadraticVariation
+public import AlphaRAR.ForLMLExplore.MeasureTheory.Function.TendstoInDistribution
 public import Mathlib.MeasureTheory.Function.ConditionalExpectation.CondJensen
 public import Mathlib.MeasureTheory.Function.ConditionalExpectation.PullOut
 public import Mathlib.MeasureTheory.Function.ConvergenceInDistribution
@@ -29,7 +29,7 @@ Mathlib; here we build the martingale core. The statement has the shape of Mathl
 central limit theorem `ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub`: the row sums
 converge in distribution to any random variable `Y` with `HasLaw Y (gaussianReal 0 σ²)`.
 
-This file is Mathlib-bound staging (cf. the `AlphaRAR/Mathlib/` directory).
+This file is library-shaped staging (cf. the `AlphaRAR/ForLMLExplore/` directory).
 
 ## Reusable analytic ingredients
 
@@ -62,7 +62,8 @@ This file is Mathlib-bound staging (cf. the `AlphaRAR/Mathlib/` directory).
 
 The complements to Mathlib's `TendstoInDistribution` API that the applications use (eventual
 congruence, subsequences, naming a limit by its law, Slutsky for a product, Cramér–Wold) are in
-`AlphaRAR.Mathlib.TendstoInDistribution`, which this file imports publicly.
+`AlphaRAR.ForLMLExplore.MeasureTheory.Function.TendstoInDistribution`, which this file imports
+publicly.
 -/
 
 @[expose] public section

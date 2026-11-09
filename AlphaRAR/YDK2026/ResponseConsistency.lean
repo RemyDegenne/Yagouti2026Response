@@ -6,7 +6,7 @@ Authors: Rémy Degenne
 module
 
 public import AlphaRAR.YDK2026.Deterministic
-public import AlphaRAR.Mathlib.MartingaleSLLN
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.MartingaleSLLN
 public import AlphaRAR.YDK2026.Response
 public import Mathlib.Algebra.Ring.IsFormallyReal
 public meta import TrustAnnotations

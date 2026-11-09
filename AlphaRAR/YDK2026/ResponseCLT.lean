@@ -5,9 +5,9 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.MartingaleCLT
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.MartingaleCLT
 public import AlphaRAR.YDK2026.ARTSConsistency
-public import AlphaRAR.Mathlib.Tactic.Tendsto
+public import AlphaRAR.Tactic.Tendsto
 public meta import TrustAnnotations
 
 /-!

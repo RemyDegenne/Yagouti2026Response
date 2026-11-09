@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.DeviationBound
+public import AlphaRAR.ForLMLExplore.Probability.StochasticOrder.DeviationBound
 
 /-!
 # `ell_rho_control` and the assembled `prop_dev` deviation bound

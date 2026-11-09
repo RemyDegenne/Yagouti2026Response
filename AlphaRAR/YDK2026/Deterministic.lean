@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.Convergence
+public import AlphaRAR.ForLMLExplore.Analysis.SpecificLimits.Convergence
 public import AlphaRAR.YDK2026.Count
 public import Mathlib.Algebra.BigOperators.Field
 public import Mathlib.Algebra.Order.Star.Real

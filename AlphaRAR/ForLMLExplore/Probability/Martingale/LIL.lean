@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.Freedman
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.Freedman
 public meta import TrustAnnotations
 
 /-!

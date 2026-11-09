@@ -5,9 +5,9 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.LeanMachineLearning.PullCount
+public import AlphaRAR.ForLMLExplore.SequentialLearning.PullCount
 public import LeanMachineLearning.SequentialLearning.ActionIndicator
-public import AlphaRAR.Mathlib.Filtration
+public import AlphaRAR.ForLMLExplore.Probability.Process.Filtration
 public meta import TrustAnnotations
 
 /-!

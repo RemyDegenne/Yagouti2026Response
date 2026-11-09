@@ -5,7 +5,7 @@ Authors: Rémy Degenne
 -/
 module
 
-public import AlphaRAR.Mathlib.MartingaleIncrement
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.MartingaleIncrement
 public import AlphaRAR.YDK2026.Response
 
 /-!

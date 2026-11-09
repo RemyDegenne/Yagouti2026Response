@@ -6,9 +6,9 @@ Authors: Rémy Degenne
 module
 
 public import AlphaRAR.YDK2026.Assignment
-public import AlphaRAR.Mathlib.LIL
-public import AlphaRAR.Mathlib.MartingaleRate
-public import AlphaRAR.Mathlib.MartingaleSLLN
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.LIL
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.MartingaleRate
+public import AlphaRAR.ForLMLExplore.Probability.Martingale.MartingaleSLLN
 
 /-!
 # Rates for the assignment martingale
