@@ -296,7 +296,7 @@ alignment:
     target ρ : H → Δ_K, twice differentiable on an open H, is a map T defined, continuous and
     simplex-valued on all of ℝ^K, and the designs have no burn-in (m₀ = 0).
   statements:
-    - source: "Section 2, equation (1) / Section 3 — model, RAR procedures, sequential estimator"
+    - source: "count — Section 2, equation (1) / Section 3, model, RAR procedures, sequential estimator"
       lean: "AlphaRAR.count, AlphaRAR.estimator, AlphaRAR.aRTSTarget, AlphaRAR.attainableSet"
       module: >-
         AlphaRAR.YDK2026.Count, AlphaRAR.YDK2026.Deterministic, AlphaRAR.YDK2026.ARTSConsistency,
@@ -309,7 +309,7 @@ alignment:
         Section 4 are hypotheses of the theorems rather than standalone declarations.
         `AlphaRAR.attainableSet`, the closure of the estimator's values over the sample space,
         stands in for the sets I_k of Condition B.
-    - source: "Definition 3.1 — the αRTS family (throttling condition (3))"
+    - source: "IsARTS — Definition 3.1, the αRTS family (throttling condition (3))"
       lean: "AlphaRAR.IsARTS"
       module: "AlphaRAR.YDK2026.ARTSAlgorithm"
       status: "proved"
@@ -318,7 +318,7 @@ alignment:
         History-level design predicate; the throttling condition (3) is its content. Without
         burn-in: the throttle holds from the first patient on (m₀ = 0), the case that the remark
         after the definition says is enough.
-    - source: "Examples 3.1–3.3 — distance-based, ERADE 2025, interpolated D-Tracking"
+    - source: "distance_isARTS — Examples 3.1–3.3, distance-based, ERADE 2025, interpolated D-Tracking"
       lean: "AlphaRAR.distance_isARTS, AlphaRAR.erade_isARTS, AlphaRAR.dTracking_isARTS"
       module: "AlphaRAR.YDK2026.ARTSDesigns"
       status: "proved"
@@ -327,7 +327,7 @@ alignment:
         Each design is defined (`distanceAlgorithm`, `eradeAlgorithm`, `dTrackingAlgorithm`),
         shown to take values in the simplex, and shown to be αRTS. Without burn-in (m₀ = 0), as
         for Definition 3.1.
-    - source: "Theorem 4.1 — strong consistency and rates"
+    - source: "aRTS_LLN — Theorem 4.1, strong consistency and rates"
       lean: "AlphaRAR.aRTS_LLN"
       module: "AlphaRAR.YDK2026.ARTSRates"
       status: "proved"
@@ -336,7 +336,7 @@ alignment:
         Condition B as the section note says, with T positive on the closure of the estimator's
         values and differentiable at Θ instead of twice differentiable; for α ∈ [0, 1], not only
         [0, 1).
-    - source: "Theorem 4.2, part (i), equations (5)–(7) — proportion deviations"
+    - source: "aRTS_prop_dev — Theorem 4.2, part (i), equations (5)–(7), proportion deviations"
       lean: "AlphaRAR.aRTS_prop_dev, AlphaRAR.aRTS_prop_dev_ae, AlphaRAR.aRTS_count_sub_smul_ae"
       module: "AlphaRAR.YDK2026.PropDevARTS, AlphaRAR.YDK2026.PropDevLIL"
       status: "proved"
@@ -345,7 +345,7 @@ alignment:
         Equation (5) is `aRTS_prop_dev`, (6) is `aRTS_prop_dev_ae`, (7) is
         `aRTS_count_sub_smul_ae`. Each assumes T globally Lipschitz and, for (6) and (7),
         differentiable at Θ, instead of twice differentiable.
-    - source: "Theorem 4.2, part (ii), equation (8) — √n(Θ̂ₙ − Θ) ⇒ 𝒩(0, V)"
+    - source: "estimator_sqrtN_joint_tendsto_multivariateGaussian — Theorem 4.2, part (ii), equation (8), √n(Θ̂ₙ − Θ) ⇒ 𝒩(0, V)"
       lean: "AlphaRAR.estimator_sqrtN_joint_tendsto_multivariateGaussian"
       module: "AlphaRAR.YDK2026.ResponseCLTJoint"
       status: "proved"
@@ -353,7 +353,7 @@ alignment:
       note: >-
         Stated for any design whose proportions converge a.s. to a positive v. For αRTS that is
         Theorem 4.1 (`aRTS_LLN`), but the instantiation is not stated.
-    - source: "Theorem 4.2, part (ii), equation (9) — joint CLT for proportions and plug-in target"
+    - source: "aRTS_clt_joint — Theorem 4.2, part (ii), equation (9), joint CLT for proportions and plug-in target"
       lean: "AlphaRAR.aRTS_clt_joint"
       module: "AlphaRAR.YDK2026.ARTSNormality"
       status: "proved"
@@ -377,7 +377,7 @@ alignment:
       note: >-
         Needs Proposition C.4, the exponential-family variance / inverse-Fisher-information
         identity, deliberately out of scope.
-    - source: "Lemma 4.4 — generic sufficient conditions for Theorems 4.1 and 4.2"
+    - source: "consistency_of_generic_ae — Lemma 4.4, generic sufficient conditions for Theorems 4.1 and 4.2"
       lean: "AlphaRAR.consistency_of_generic_ae"
       module: "AlphaRAR.YDK2026.ConsistencyMatching"
       status: "in-progress"
@@ -386,14 +386,14 @@ alignment:
         plug-in-target limit give N_{n,k}/n → u_k a.s. for every arm. The Theorem 4.2 direction
         is not a single generic statement; it is obtained through the shared hitting-time
         interface, instantiated separately for αRTS and αRTS-FE.
-    - source: "Lemma 4.5 — joint CLT with componentwise scaling"
+    - source: "estimatorError_joint_tendsto_multivariateGaussian — Lemma 4.5, joint CLT with componentwise scaling"
       lean: "AlphaRAR.estimatorError_joint_tendsto_multivariateGaussian"
       module: "AlphaRAR.YDK2026.ResponseCLTJoint"
       status: "proved"
       relation: "narrowMatch"
       erratum: "E1"
       note: "Statement strengthened by a regularity hypothesis; see fidelity.divergences item 1."
-    - source: "Definition 5.1 — the αRTS-FE family"
+    - source: "IsARTSFE — Definition 5.1, the αRTS-FE family"
       lean: "AlphaRAR.IsARTSFE, AlphaRAR.IsExplorationSchedule"
       module: "AlphaRAR.YDK2026.ForcedExploration"
       status: "proved"
@@ -414,7 +414,7 @@ alignment:
         The conclusions of Theorems 4.1 and 4.2 transported to αRTS-FE, one declaration each.
         Theorem 4.1's rates and equation (8) have no αRTS-FE declaration, and
         `aRTSFE_proportion_tendsto` does not identify the limit of N_n/n as v.
-    - source: "Theorem 5.2 — consistency and rate for sparse targets"
+    - source: "aRTSFE_sparse_rate_of_isARTSFE — Theorem 5.2, consistency and rate for sparse targets"
       lean: "AlphaRAR.aRTSFE_sparse_rate_of_isARTSFE"
       module: "AlphaRAR.YDK2026.ForcedExplorationSparse"
       status: "proved"
@@ -424,7 +424,7 @@ alignment:
         `AlphaRAR.aRTSFE_no_starvation` in AlphaRAR.YDK2026.ForcedExploration. For a monotone
         schedule h = o(n) instead of o(√n), and any forced-exploration distribution on the
         least-sampled under-explored arms.
-    - source: "Corollary 5.3 — componentwise CLT for αRTS-FE"
+    - source: "aRTSFE_sparse_clt_of_contDiffAt — Corollary 5.3, componentwise CLT for αRTS-FE"
       lean: "AlphaRAR.aRTSFE_sparse_clt_of_contDiffAt"
       module: "AlphaRAR.YDK2026.ForcedExplorationSparse"
       status: "proved"
@@ -434,7 +434,7 @@ alignment:
         Under the modified schedule condition (⋆); see fidelity.divergences item 2. Also assumes
         the schedule regularity h(n − (K⌈h(n)⌉ + 1))/h(n) → 1, and T C² at Θ in its sparse
         coordinates.
-    - source: "Lemma 6.1 — Pearson statistic and its asymptotic null distribution (Appendix B.3)"
+    - source: "isProjection_one_sub_vecMulVec — Lemma 6.1, Pearson statistic and its asymptotic null distribution (Appendix B.3)"
       lean: "AlphaRAR.isProjection_one_sub_vecMulVec"
       module: "AlphaRAR.ForLMLExplore.Analysis.Matrix.Projection"
       status: "in-progress"
